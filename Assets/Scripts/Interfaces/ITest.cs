@@ -1,6 +1,7 @@
-using UnityEngine;
-
-public interface Test
+namespace Interfaces
 {
+    public interface ITest
+    {
 
+    }
 }
