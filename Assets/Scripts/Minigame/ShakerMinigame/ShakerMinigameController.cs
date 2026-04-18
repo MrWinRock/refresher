@@ -92,6 +92,11 @@ namespace Minigame.ShakerMinigame
             scoreManager?.ResetScore();
             noteSpawner?.Begin(timingJudge != null ? timingJudge.MaxWindow : 0.2f);
             minigameManager?.RequestMinigame(minigameId);
+
+            if (debugMode && timingJudge != null)
+            {
+                Debug.Log($"[QTE] Timing Ranges -> {timingJudge.BuildRangeSummary()}");
+            }
         }
 
         public void EndMinigame()
@@ -182,7 +187,13 @@ namespace Minigame.ShakerMinigame
             if (debugMode)
             {
                 var score = scoreManager != null ? scoreManager.CurrentScore : 0;
-                Debug.Log($"[QTE] Key: {pressedDirection} | Thit: {hitTime:F3} | Tobj: {note.TargetHitTime:F3} | deltaT: {result.DeltaT:F3} | Result: {result.Tier} | Score: {score}");
+                var rangeLabel = "N/A";
+                if (timingJudge != null && timingJudge.TryGetTierRange(result.Tier, out var minRange, out var maxRange))
+                {
+                    rangeLabel = $"{minRange:F3}-{maxRange:F3}s";
+                }
+
+                Debug.Log($"[QTE] Key: {pressedDirection} | Thit: {hitTime:F3} | Tobj: {note.TargetHitTime:F3} | deltaT: {result.DeltaT:F3} | Range: {rangeLabel} | Result: {result.Tier} | Score: {score}");
             }
         }
 

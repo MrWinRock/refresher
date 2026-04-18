@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace Minigame.ShakerMinigame
@@ -9,28 +10,48 @@ namespace Minigame.ShakerMinigame
         [Header("Timing Windows (seconds)")]
         [SerializeField] private ShakerJudgementWindow[] windows =
         {
-            new() { threshold = 0.045f, tier = JudgementTier.Perfect, score = 300 },
-            new() { threshold = 0.09f, tier = JudgementTier.Great, score = 200 },
-            new() { threshold = 0.14f, tier = JudgementTier.Good, score = 100 },
-            new() { threshold = 0.22f, tier = JudgementTier.Bad, score = 25 }
+            new() { threshold = 0.06f, tier = JudgementTier.Perfect, score = 300 },
+            new() { threshold = 0.11f, tier = JudgementTier.Great, score = 200 },
+            new() { threshold = 0.17f, tier = JudgementTier.Good, score = 100 },
+            new() { threshold = 0.26f, tier = JudgementTier.Bad, score = 25 }
         };
+
+        [Header("Range Adjust")]
+        [Min(0.1f)]
+        [SerializeField] private float timingWindowScale = 1.1f;
+        [Tooltip("Adds extra seconds only to Perfect threshold (applies both early and late because deltaT is absolute).")]
+        [Min(0f)]
+        [SerializeField] private float perfectBonusSeconds = 0.02f;
 
         [Header("Fever")]
         [SerializeField] private int feverPerfectScore = 300;
 
-        private ShakerJudgementWindow[] orderedWindows;
+        private ShakerJudgementWindow[] _orderedWindows;
 
-        public float MaxWindow => orderedWindows.Length == 0 ? 0.2f : orderedWindows[^1].threshold;
+        public float MaxWindow => _orderedWindows.Length == 0 ? 0.2f : _orderedWindows[^1].threshold * timingWindowScale;
 
         private void Awake()
         {
-            orderedWindows = windows
+            RebuildWindows();
+        }
+
+        private void OnValidate()
+        {
+            RebuildWindows();
+        }
+
+        private void RebuildWindows()
+        {
+            timingWindowScale = Mathf.Max(0.1f, timingWindowScale);
+
+            _orderedWindows = windows
+                .Where(window => window.threshold >= 0f)
                 .OrderBy(window => window.threshold)
                 .ToArray();
 
-            if (orderedWindows.Length == 0)
+            if (_orderedWindows.Length == 0)
             {
-                orderedWindows = new[] { new ShakerJudgementWindow { threshold = 0.2f, tier = JudgementTier.Bad, score = 0 } };
+                _orderedWindows = new[] { new ShakerJudgementWindow { threshold = 0.2f, tier = JudgementTier.Bad, score = 0 } };
             }
         }
 
@@ -43,15 +64,79 @@ namespace Minigame.ShakerMinigame
                 return new ShakerJudgementResult(JudgementTier.Perfect, feverPerfectScore, deltaT);
             }
 
-            foreach (var window in orderedWindows)
+            foreach (var window in _orderedWindows)
             {
-                if (deltaT <= window.threshold)
+                var effectiveThreshold = GetEffectiveThreshold(window);
+                if (deltaT <= effectiveThreshold)
                 {
                     return new ShakerJudgementResult(window.tier, window.score, deltaT);
                 }
             }
 
             return new ShakerJudgementResult(JudgementTier.Bad, 0, deltaT);
+        }
+
+        public bool TryGetTierRange(JudgementTier tier, out float minInclusive, out float maxInclusive)
+        {
+            minInclusive = 0f;
+            maxInclusive = 0f;
+            var previousThreshold = 0f;
+
+            for (var i = 0; i < _orderedWindows.Length; i++)
+            {
+                var window = _orderedWindows[i];
+                var currentThreshold = GetEffectiveThreshold(window);
+
+                if (window.tier == tier)
+                {
+                    minInclusive = i == 0 ? 0f : previousThreshold;
+                    maxInclusive = currentThreshold;
+                    return true;
+                }
+
+                previousThreshold = currentThreshold;
+            }
+
+            return false;
+        }
+
+        private float GetEffectiveThreshold(ShakerJudgementWindow window)
+        {
+            var threshold = window.threshold * timingWindowScale;
+
+            if (window.tier == JudgementTier.Perfect)
+            {
+                threshold += perfectBonusSeconds;
+            }
+
+            return threshold;
+        }
+
+        public string BuildRangeSummary()
+        {
+            var builder = new StringBuilder();
+
+            foreach (JudgementTier tier in Enum.GetValues(typeof(JudgementTier)))
+            {
+                if (!TryGetTierRange(tier, out var min, out var max))
+                {
+                    continue;
+                }
+
+                if (builder.Length > 0)
+                {
+                    builder.Append(" | ");
+                }
+
+                builder.Append(tier);
+                builder.Append(": ");
+                builder.Append(min.ToString("F3"));
+                builder.Append("-");
+                builder.Append(max.ToString("F3"));
+                builder.Append("s");
+            }
+
+            return builder.ToString();
         }
     }
 }

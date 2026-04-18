@@ -92,7 +92,7 @@ namespace Minigame.ShakerMinigame
         private void OnNoteExpiredInternally(ShakerNoteController note, float _)
         {
             NoteExpired?.Invoke(note);
-            RemoveNote(note);
+            note.PlayTimeoutAnimation(() => RemoveNote(note));
         }
 
         public bool TryGetNoteByDirection(ArrowDirection direction, out ShakerNoteController note)

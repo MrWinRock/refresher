@@ -339,10 +339,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Minigame.ShakerMinigame.BartenderShakeAnimator
   bartenderTransform: {fileID: 1292248689}
-  duration: 0.4
+  duration: 0.5
   positionStrength: 25
-  rotationStrength: 15
-  vibrato: 25
+  rotationStrength: 10
+  shakeSteps: 2
+  settleDuration: 1
 --- !u!114 &163720331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +407,8 @@ MonoBehaviour:
   - threshold: 0.22
     tier: 3
     score: 25
+  timingWindowScale: 1
+  perfectBonusSeconds: 0.015
   feverPerfectScore: 300
 --- !u!114 &163720334
 MonoBehaviour:

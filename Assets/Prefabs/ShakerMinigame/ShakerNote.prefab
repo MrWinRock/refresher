@@ -98,6 +98,11 @@ MonoBehaviour:
   manualHitScale: 1
   visualHitTimeOffsetSeconds: 0
   latePhaseEndScale: 0.85
+  noteCanvasGroup: {fileID: 0}
+  timeoutDropDistance: 180
+  timeoutDuration: 0.28
+  timeoutRotation: -28
+  timeoutAnticipationScale: 1.05
 --- !u!1 &4469240479355652562
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +138,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 170, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4535021765399341202
 CanvasRenderer:
