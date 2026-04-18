@@ -66,6 +66,25 @@ Scenes required in Build Settings (in order):
 
 ### Core Systems
 
+#### 1. **Shaker Minigame (Bartender QTE)**
+
+Scripts live in `Assets/Scripts/Minigame/ShakerMinigame`.
+
+- `ShakerMinigameController`: orchestrates flow, scoring, debug logs, and minigame handoff.
+- `ShakerNoteSpawner`: controlled random spawn (no same consecutive arrow and no active-arrow conflict).
+- `ShakerNoteController`: approach-circle timing and per-note lifecycle.
+- `ShakerTimingJudge`: configurable `Perfect/Great/Good/Bad` windows in Inspector.
+- `ShakerInputHandler`: Arrow key input + fever any-key handling.
+- `ShakerUIFeedback` + `BartenderShakeAnimator`: floating judgement text and bartender shake feedback.
+- `MinigameManager`: shared fever state + minigame before/after callbacks.
+
+Quick editor test harness:
+
+- Add `ShakerMinigameDebugBootstrap` to any active object.
+- `F1` start shaker minigame
+- `F2` end shaker minigame
+- `F3` toggle fever mode
+
 #### 1. **Wow**
 
 * Wow
