@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Foreground
-  - 
+  - Background
   - 
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
     locked: 0
   - name: Background
     uniqueID: 470137453
+    locked: 0
+  - name: Particle
+    uniqueID: 4272962837
     locked: 0
   - name: Midground
     uniqueID: 1770262337
