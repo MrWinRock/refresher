@@ -7,8 +7,8 @@ public class BoostMode : MonoBehaviour
     private static BoostMode Instance { get; set; }
 
     [SerializeField] private float boostPoints;
-    private const int DefaultThreshold = 5;
-    private const float BoostDuration = 10f;
+    [SerializeField] private int defaultThreshold = 5;
+    [SerializeField] private float boostDuration = 10f;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class BoostMode : MonoBehaviour
     public void AddBoostPoints(float points)
     {
         boostPoints += points;
-        if (boostPoints >= DefaultThreshold) ApplyBoost();
+        if (boostPoints >= defaultThreshold) ApplyBoost();
     }
 
     private void ApplyBoost()
@@ -39,7 +39,7 @@ public class BoostMode : MonoBehaviour
 
     private IEnumerator BoostCooldown()
     {
-        yield return new WaitForSeconds(BoostDuration);
+        yield return new WaitForSeconds(boostDuration);
 
         boostPoints = 0;
     }
