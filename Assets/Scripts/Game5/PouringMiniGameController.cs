@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using NaughtyAttributes;
 
 namespace Game5
 {
@@ -21,12 +22,29 @@ namespace Game5
         [SerializeField] private float rotationSpeed = 180f;
         [SerializeField] private bool clearParticlesOnStop;
 
-        private const float TargetFillNormalized = 0.8f;
+        [Header("Scoring (Time)")]
+        [SerializeField] private float perfectTimeSeconds = 5.539817f;
+        [SerializeField] private float perfectEarlyTolerance = 0.12f;
+        [SerializeField] private float perfectLateTolerance = 0.05f;
+        [SerializeField] private float goodEarlyTolerance = 0.35f;
+        [SerializeField] private float goodLateTolerance = 0.20f;
 
         private Quaternion _initialShakerRotation;
         private bool _hasStartedPouring;
         private bool _overflowed;
         private bool _isFinished;
+        private float _pourStartTime;
+
+        [Header("Debug (Runtime)")]
+        [SerializeField, ReadOnly] private float pointsEarned;
+        [SerializeField, ReadOnly] private float pouredPercent;
+        [SerializeField, ReadOnly] private float targetTimeDebug;
+        //ส่วนต่างเวลาเทียบเป้า ติดลบ = เร็วกว่าเป้า, ติดบวก = ช้ากว่าเป้า
+        [SerializeField, ReadOnly] private float deltaTimeDebug;
+        //เวลาที่กำลังเท
+        [SerializeField, ReadOnly] private float elapsedPourTime;
+        [SerializeField, ReadOnly] private float finalPourTime;
+        [SerializeField, ReadOnly] private string lastResult = "-";
 
         public bool IsFinished => _isFinished;
 
@@ -45,8 +63,10 @@ namespace Game5
             }
 
             _initialShakerRotation = shaker.localRotation;
+
             SetWaterY(minY);
             StopStream();
+            RefreshDebugPourMetrics();
         }
 
         private void Update()
@@ -61,7 +81,13 @@ namespace Game5
 
             if (isHoldingPourKey)
             {
-                _hasStartedPouring = true;
+                if (!_hasStartedPouring)
+                {
+                    _hasStartedPouring = true;
+                    _pourStartTime = Time.time;
+                }
+
+                elapsedPourTime = Time.time - _pourStartTime;
                 RotateShakerToPourAngle();
                 StartStream();
 
@@ -120,6 +146,7 @@ namespace Game5
             Vector3 localPos = waterObject.localPosition;
             localPos.y = Mathf.Clamp(y, minY, maxY);
             waterObject.localPosition = localPos;
+            RefreshDebugPourMetrics();
         }
 
         private void StartStream()
@@ -162,35 +189,58 @@ namespace Game5
             }
 
             _isFinished = true;
+            finalPourTime = elapsedPourTime;
             StopStream();
             EvaluateResult();
         }
 
         private void EvaluateResult()
         {
-            float tHit = Mathf.InverseLerp(minY, maxY, waterObject.localPosition.y);
-            float deltaT = Mathf.Abs(tHit - TargetFillNormalized);
+            float earlyDelta = perfectTimeSeconds - finalPourTime;
+            float lateDelta = finalPourTime - perfectTimeSeconds;
+
+            RefreshDebugPourMetrics();
 
             string result;
 
-            if (_overflowed)
+            bool isOverflow = _overflowed || waterObject.localPosition.y >= maxY;
+            pointsEarned = 0f;
+
+            if (isOverflow)
             {
                 result = "Bad (Overflow)";
             }
-            else if (deltaT < 0.05f)
+            else if (earlyDelta <= perfectEarlyTolerance && lateDelta <= perfectLateTolerance)
             {
                 result = "Perfect";
+                pointsEarned = 1f;
             }
-            else if (deltaT < 0.15f)
+            else if (earlyDelta <= goodEarlyTolerance && lateDelta <= goodLateTolerance)
             {
                 result = "Good";
+                pointsEarned = 0.5f;
             }
             else
             {
                 result = "Bad";
             }
 
-            Debug.Log($"Pour Result: {result} | tHit={tHit:F2}, target={TargetFillNormalized:F2}, delta={deltaT:F2}", this);
+            lastResult = result;
+            Debug.Log($"Pour Result: {lastResult} | points={pointsEarned:F1} | pourTime={finalPourTime:F3}s target={targetTimeDebug:F3}s delta={deltaTimeDebug:+0.000;-0.000;0.000}s | fill={pouredPercent:F1}%", this);
+        }
+
+        private void RefreshDebugPourMetrics()
+        {
+            if (waterObject == null)
+            {
+                return;
+            }
+
+            float currentNormalized = Mathf.InverseLerp(minY, maxY, waterObject.localPosition.y);
+
+            pouredPercent = Mathf.Clamp01(currentNormalized) * 100f;
+            targetTimeDebug = perfectTimeSeconds;
+            deltaTimeDebug = finalPourTime - perfectTimeSeconds;
         }
 
         [ContextMenu("Calibration/Set Water Empty")]
