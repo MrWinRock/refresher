@@ -6,7 +6,7 @@ public class BoostMode : MonoBehaviour
 {
     private static BoostMode Instance { get; set; }
 
-    private float _boostPoints;
+    [SerializeField] private float boostPoints;
     private const int DefaultThreshold = 5;
     private const float BoostDuration = 10f;
 
@@ -22,12 +22,12 @@ public class BoostMode : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public float BoostPoints => _boostPoints;
+    public float BoostPoints => boostPoints;
 
     public void AddBoostPoints(float points)
     {
-        _boostPoints += points;
-        if (_boostPoints >= DefaultThreshold) ApplyBoost();
+        boostPoints += points;
+        if (boostPoints >= DefaultThreshold) ApplyBoost();
     }
 
     private void ApplyBoost()
@@ -41,6 +41,6 @@ public class BoostMode : MonoBehaviour
     {
         yield return new WaitForSeconds(BoostDuration);
 
-        _boostPoints = 0;
+        boostPoints = 0;
     }
 }

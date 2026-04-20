@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PointManager
 {
     private float _totalPoints;

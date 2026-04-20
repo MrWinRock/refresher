@@ -28,15 +28,21 @@ namespace Game5
         [SerializeField] private float perfectLateTolerance = 0.05f;
         [SerializeField] private float goodEarlyTolerance = 0.35f;
         [SerializeField] private float goodLateTolerance = 0.20f;
+        [SerializeField] private float maxTotalPoints = 1f;
 
         private Quaternion _initialShakerRotation;
         private bool _hasStartedPouring;
         private bool _overflowed;
         private bool _isFinished;
         private float _pourStartTime;
+        private PointManager _pointManager;
+        private BoostMode _boostMode;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
+        [SerializeField, ReadOnly] private float totalPoints;
+        [SerializeField, ReadOnly] private float normalizedPoints;
+        [SerializeField, ReadOnly] private float boostPointsToAdd;
         [SerializeField, ReadOnly] private float pouredPercent;
         [SerializeField, ReadOnly] private float targetTimeDebug;
         //ส่วนต่างเวลาเทียบเป้า ติดลบ = เร็วกว่าเป้า, ติดบวก = ช้ากว่าเป้า
@@ -63,6 +69,8 @@ namespace Game5
             }
 
             _initialShakerRotation = shaker.localRotation;
+            _pointManager = new PointManager(maxTotalPoints > 0f ? maxTotalPoints : 1f);
+            _boostMode = FindFirstObjectByType<BoostMode>();
 
             SetWaterY(minY);
             StopStream();
@@ -225,8 +233,26 @@ namespace Game5
                 result = "Bad";
             }
 
+            if (_pointManager != null)
+            {
+                _pointManager.AddPoints(pointsEarned);
+                totalPoints = _pointManager.TotalPoints;
+                normalizedPoints = _pointManager.CalculatePoints();
+                boostPointsToAdd = normalizedPoints;
+            }
+
+            if (_boostMode == null)
+            {
+                _boostMode = FindFirstObjectByType<BoostMode>();
+            }
+
+            if (_boostMode != null)
+            {
+                _boostMode.AddBoostPoints(boostPointsToAdd);
+            }
+
             lastResult = result;
-            Debug.Log($"Pour Result: {lastResult} | points={pointsEarned:F1} | pourTime={finalPourTime:F3}s target={targetTimeDebug:F3}s delta={deltaTimeDebug:+0.000;-0.000;0.000}s | fill={pouredPercent:F1}%", this);
+            Debug.Log($"Pour Result: {lastResult} | points={pointsEarned:F1}, total={totalPoints:F1}, normalized={normalizedPoints:F2}, boostAdd={boostPointsToAdd:F2} | pourTime={finalPourTime:F3}s target={targetTimeDebug:F3}s delta={deltaTimeDebug:+0.000;-0.000;0.000}s | fill={pouredPercent:F1}%", this);
         }
 
         private void RefreshDebugPourMetrics()

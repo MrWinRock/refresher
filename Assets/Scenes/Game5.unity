@@ -549,6 +549,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &534813414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 534813416}
+  - component: {fileID: 534813415}
+  m_Layer: 0
+  m_Name: BoostMode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &534813415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534813414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce201bea621bc28409703639fe70ca48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoostMode
+  boostPoints: 0
+--- !u!4 &534813416
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534813414}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.24664, y: -3.24999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &575918173
 GameObject:
   m_ObjectHideFlags: 0
@@ -5984,8 +6029,8 @@ MonoBehaviour:
   perfectLateTolerance: 0.05
   goodEarlyTolerance: 0.35
   goodLateTolerance: 0.2
-  totalScore: 0
   pointsEarned: 0
+  boostPointsFromBoostMode: 0
   pouredPercent: 100
   targetTimeDebug: 0
   deltaTimeDebug: 0
@@ -6449,3 +6494,4 @@ SceneRoots:
   - {fileID: 1625343380}
   - {fileID: 1931481564}
   - {fileID: 475811767}
+  - {fileID: 534813416}
