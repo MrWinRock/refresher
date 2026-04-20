@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Foreground
   - Background
-  - 
-  - 
+  - ObjInScene
+  - SceneTransition
   - 
   - 
   - 
@@ -52,6 +52,12 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 304083175
+    locked: 0
+  - name: ObjInScene
+    uniqueID: 2892483723
+    locked: 0
+  - name: SceneTransition
+    uniqueID: 3336112031
     locked: 0
   m_RenderingLayers:
   - Default
