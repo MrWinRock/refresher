@@ -821,6 +821,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 4173002254434994636, guid: c2a1d4e8255bbb047844b24c9bb79763, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6038553050203208359, guid: c2a1d4e8255bbb047844b24c9bb79763, type: 3}
       propertyPath: m_Name
       value: Shaker
