@@ -37,6 +37,10 @@ TagManager:
   - 
   - 
   - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
@@ -54,10 +58,10 @@ TagManager:
     uniqueID: 304083175
     locked: 0
   - name: ObjInScene
-    uniqueID: 2892483723
+    uniqueID: 300756739
     locked: 0
   - name: SceneTransition
-    uniqueID: 3336112031
+    uniqueID: 1182449031
     locked: 0
   m_RenderingLayers:
   - Default
