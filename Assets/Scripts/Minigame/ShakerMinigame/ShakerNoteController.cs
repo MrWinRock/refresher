@@ -18,7 +18,7 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private RectTransform baseCircle;
         [SerializeField] private bool autoMatchBaseCircleScale = true;
         [SerializeField] private float manualHitScale = 1f;
-        [SerializeField] private float visualHitTimeOffsetSeconds = 0f;
+        [SerializeField] private float visualHitTimeOffsetSeconds;
         [SerializeField] private float latePhaseEndScale = 0.85f;
 
         [Header("Approach Feel")]
