@@ -37,10 +37,6 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
@@ -53,6 +49,24 @@ TagManager:
     locked: 0
   - name: Midground
     uniqueID: 1770262337
+    locked: 0
+  - name: Body
+    uniqueID: 1001249137
+    locked: 0
+  - name: Outfit
+    uniqueID: 1284023711
+    locked: 0
+  - name: Face
+    uniqueID: 682244279
+    locked: 0
+  - name: Hair
+    uniqueID: 4003570091
+    locked: 0
+  - name: Ear
+    uniqueID: 3838725841
+    locked: 0
+  - name: Accessory
+    uniqueID: 1751720787
     locked: 0
   - name: Foreground
     uniqueID: 304083175

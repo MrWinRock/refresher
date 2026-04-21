@@ -12,10 +12,11 @@ namespace Refresh
         [SerializeField] private Transform exitPoint;
         [SerializeField] private Transform spawnPoint;
 
+        [Header("Visual Random")]
+        [SerializeField] private List<Sprite> customerVisualSprites = new List<Sprite>();
+
         [Header("Spawn")]
         [SerializeField] private bool autoStartOnEnable = true;
-        [SerializeField] private bool useQueueMode = true;
-        [SerializeField] private float queueSpawnDelay = 0.1f;
         [SerializeField] private float spawnInterval = 4f;
         [SerializeField] private int maxActiveCustomers = 1;
 
@@ -63,7 +64,7 @@ namespace Refresh
         public void SpawnNow()
         {
             CleanupInactiveCustomers();
-            var activeLimit = useQueueMode ? 1 : Mathf.Max(1, maxActiveCustomers);
+            var activeLimit = Mathf.Max(1, maxActiveCustomers);
             if (_activeCustomers.Count >= activeLimit)
             {
                 return;
@@ -77,6 +78,7 @@ namespace Refresh
 
             var startPosition = spawnPoint != null ? spawnPoint.position : waitingPoint.position;
             var customer = Instantiate(customerPrefab, startPosition, Quaternion.identity, transform);
+            customer.SetVisualSprite(GetRandomCustomerVisualSprite());
             customer.Initialize(waitingPoint, exitPoint);
             _activeCustomers.Add(customer);
         }
@@ -85,65 +87,12 @@ namespace Refresh
         {
             while (_isSpawning)
             {
-                if (useQueueMode)
-                {
-                    yield return QueueSpawnStep();
-                }
-                else
-                {
-                    SpawnNow();
-                    var delay = Mathf.Max(0.1f, spawnInterval);
-                    yield return new WaitForSeconds(delay);
-                }
-            }
-        }
-
-        private IEnumerator QueueSpawnStep()
-        {
-            CleanupInactiveCustomers();
-
-            if (_activeCustomers.Count > 0)
-            {
-                yield return null;
-                yield break;
-            }
-
-            SpawnNow();
-            if (_activeCustomers.Count == 0)
-            {
-                // Missing references or failed spawn: avoid tight loop.
-                yield return new WaitForSeconds(0.25f);
-                yield break;
-            }
-
-            // Wait until this customer has fully left (deactivated/destroyed).
-            yield return new WaitUntil(() => !_isSpawning || !IsAnyCustomerActive());
-            if (!_isSpawning)
-            {
-                yield break;
-            }
-
-            CleanupInactiveCustomers();
-            var delay = Mathf.Max(0f, queueSpawnDelay);
-            if (delay > 0f)
-            {
+                SpawnNow();
+                var delay = Mathf.Max(0.1f, spawnInterval);
                 yield return new WaitForSeconds(delay);
             }
         }
 
-        private bool IsAnyCustomerActive()
-        {
-            for (var i = 0; i < _activeCustomers.Count; i++)
-            {
-                var customer = _activeCustomers[i];
-                if (customer != null && customer.gameObject.activeInHierarchy)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         private void CleanupInactiveCustomers()
         {
@@ -156,7 +105,25 @@ namespace Refresh
                 }
             }
         }
+
+        private Sprite GetRandomCustomerVisualSprite()
+        {
+            var validSprites = new List<Sprite>();
+            for (var i = 0; i < customerVisualSprites.Count; i++)
+            {
+                if (customerVisualSprites[i] != null)
+                {
+                    validSprites.Add(customerVisualSprites[i]);
+                }
+            }
+
+            if (validSprites.Count > 0)
+            {
+                var randomIndex = Random.Range(0, validSprites.Count);
+                return validSprites[randomIndex];
+            }
+
+            return null;
+        }
     }
 }
-
-

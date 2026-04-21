@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 1287462853168289859}
   - component: {fileID: 6087687685681845700}
   m_Layer: 0
-  m_Name: Customer
+  m_Name: NormalCustomer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -493,6 +493,7 @@ MonoBehaviour:
   heatBar: {fileID: 2776858725937840187}
   orderBubble: {fileID: 4009636701706556365}
   visualRoot: {fileID: 6816114515389166122}
+  visualRootSpriteRenderer: {fileID: 1869417570729249798}
   availableDrinks:
   - {fileID: 11400000, guid: 729686915548f9947bccf1f2eb02f159, type: 2}
   - {fileID: 11400000, guid: d3e7223128fec184998d9188a843fc23, type: 2}
