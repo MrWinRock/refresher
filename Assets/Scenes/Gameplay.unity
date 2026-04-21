@@ -262,6 +262,8 @@ MonoBehaviour:
   exitPoint: {fileID: 1662479090}
   spawnPoint: {fileID: 1583016689}
   autoStartOnEnable: 1
+  useQueueMode: 1
+  queueSpawnDelay: 0.6
   spawnInterval: 4
   maxActiveCustomers: 1
 --- !u!1 &637168510

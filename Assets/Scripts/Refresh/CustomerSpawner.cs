@@ -14,6 +14,8 @@ namespace Refresh
 
         [Header("Spawn")]
         [SerializeField] private bool autoStartOnEnable = true;
+        [SerializeField] private bool useQueueMode = true;
+        [SerializeField] private float queueSpawnDelay = 0.1f;
         [SerializeField] private float spawnInterval = 4f;
         [SerializeField] private int maxActiveCustomers = 1;
 
@@ -61,7 +63,8 @@ namespace Refresh
         public void SpawnNow()
         {
             CleanupInactiveCustomers();
-            if (_activeCustomers.Count >= Mathf.Max(1, maxActiveCustomers))
+            var activeLimit = useQueueMode ? 1 : Mathf.Max(1, maxActiveCustomers);
+            if (_activeCustomers.Count >= activeLimit)
             {
                 return;
             }
@@ -82,10 +85,64 @@ namespace Refresh
         {
             while (_isSpawning)
             {
-                SpawnNow();
-                var delay = Mathf.Max(0.1f, spawnInterval);
+                if (useQueueMode)
+                {
+                    yield return QueueSpawnStep();
+                }
+                else
+                {
+                    SpawnNow();
+                    var delay = Mathf.Max(0.1f, spawnInterval);
+                    yield return new WaitForSeconds(delay);
+                }
+            }
+        }
+
+        private IEnumerator QueueSpawnStep()
+        {
+            CleanupInactiveCustomers();
+
+            if (_activeCustomers.Count > 0)
+            {
+                yield return null;
+                yield break;
+            }
+
+            SpawnNow();
+            if (_activeCustomers.Count == 0)
+            {
+                // Missing references or failed spawn: avoid tight loop.
+                yield return new WaitForSeconds(0.25f);
+                yield break;
+            }
+
+            // Wait until this customer has fully left (deactivated/destroyed).
+            yield return new WaitUntil(() => !_isSpawning || !IsAnyCustomerActive());
+            if (!_isSpawning)
+            {
+                yield break;
+            }
+
+            CleanupInactiveCustomers();
+            var delay = Mathf.Max(0f, queueSpawnDelay);
+            if (delay > 0f)
+            {
                 yield return new WaitForSeconds(delay);
             }
+        }
+
+        private bool IsAnyCustomerActive()
+        {
+            for (var i = 0; i < _activeCustomers.Count; i++)
+            {
+                var customer = _activeCustomers[i];
+                if (customer != null && customer.gameObject.activeInHierarchy)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void CleanupInactiveCustomers()
