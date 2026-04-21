@@ -10,8 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8a9cd38eec15724782530cc787f2bdd, type: 3}
-  m_Name: DrinkData
+  m_Name: Glass01
   m_EditorClassIdentifier: Assembly-CSharp::Refresh.DrinkData
-  drinkName: 
-  drinkIcon: {fileID: 0}
-  requiredIngredients: 
+  drinkIcon: {fileID: -7370006334348061030, guid: 7d185a0fea165c448b2237f8085b40c6, type: 3}

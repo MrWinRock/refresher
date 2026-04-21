@@ -1,5 +1,4 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Refresh
@@ -8,7 +7,6 @@ namespace Refresh
     {
         [SerializeField] private GameObject bubbleRoot;
         [SerializeField] private Image drinkIcon;
-        [SerializeField] private TMP_Text drinkNameText;
 
         private void Awake()
         {
@@ -29,20 +27,11 @@ namespace Refresh
                 drinkIcon.enabled = drinkData.drinkIcon != null;
             }
 
-            if (drinkNameText != null)
-            {
-                drinkNameText.text = drinkData.drinkName;
-            }
-
             SetVisible(true);
         }
 
         public void Hide()
         {
-            if (drinkNameText != null)
-            {
-                drinkNameText.text = string.Empty;
-            }
 
             if (drinkIcon != null)
             {
