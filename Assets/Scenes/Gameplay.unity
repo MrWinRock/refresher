@@ -150,69 +150,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &457407877
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 457407879}
-  - component: {fileID: 457407878}
-  m_Layer: 0
-  m_Name: CustomerController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &457407878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 457407877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb64b0094fd5ffc4685b244e71ea2dfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Refresh.CustomerController
-  heatBar: {fileID: 0}
-  orderBubble: {fileID: 0}
-  visualRoot: {fileID: 0}
-  availableDrinks:
-  - {fileID: 11400000, guid: 729686915548f9947bccf1f2eb02f159, type: 2}
-  waitingPoint: {fileID: 0}
-  exitPoint: {fileID: 0}
-  spawnOffsetFromWaiting: 8
-  moveDuration: 1.75
-  satisfiedDelay: 0.75
-  moveEase: 1
-  enterScaleEase: 27
-  enterScaleDuration: 0.22
-  walkBobStrength: 0.08
-  walkBobDuration: 0.18
-  satisfiedPunchScale: 0.18
-  satisfiedPunchDuration: 0.3
-  leaveTiltZ: -14
-  leaveTiltDuration: 0.2
---- !u!4 &457407879
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 457407877}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &515293515
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,10 +198,12 @@ MonoBehaviour:
   waitingPoint: {fileID: 637168511}
   exitPoint: {fileID: 1662479090}
   spawnPoint: {fileID: 1583016689}
+  customerVisualSprites:
+  - {fileID: -6470460504253458178, guid: 6acfd7eb32e95dd4e8dc63aef636ea2b, type: 3}
+  - {fileID: 6623151957235123224, guid: 6acfd7eb32e95dd4e8dc63aef636ea2b, type: 3}
+  - {fileID: 2161284124966242572, guid: 6acfd7eb32e95dd4e8dc63aef636ea2b, type: 3}
   autoStartOnEnable: 1
-  useQueueMode: 1
-  queueSpawnDelay: 0.6
-  spawnInterval: 4
+  spawnInterval: 1
   maxActiveCustomers: 1
 --- !u!1 &637168510
 GameObject:
@@ -888,7 +827,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 304083175
-  m_SortingLayer: 4
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3859623504139373063, guid: 6cfa772ce1dc44b43a903d87f4dc6066, type: 3}
@@ -991,7 +930,6 @@ SceneRoots:
   - {fileID: 1080338706}
   - {fileID: 93227382}
   - {fileID: 1148866182}
-  - {fileID: 457407879}
   - {fileID: 1072181887}
   - {fileID: 2059098703}
   - {fileID: 515293516}

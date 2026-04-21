@@ -19,6 +19,7 @@ namespace Refresh
         [SerializeField] private HeatBar heatBar;
         [SerializeField] private OrderBubble orderBubble;
         [SerializeField] private Transform visualRoot;
+        [SerializeField] private SpriteRenderer visualRootSpriteRenderer;
 
         [Header("Order")]
         [SerializeField] private List<DrinkData> availableDrinks = new List<DrinkData>();
@@ -61,6 +62,8 @@ namespace Refresh
                 visualRoot = transform;
             }
 
+            ResolveVisualSpriteRenderer();
+
             TryStartLifecycle();
         }
 
@@ -70,6 +73,18 @@ namespace Refresh
             exitPoint = exit;
             _isInitialized = true;
             TryStartLifecycle();
+        }
+
+        public void SetVisualSprite(Sprite sprite)
+        {
+            ResolveVisualSpriteRenderer();
+            if (visualRootSpriteRenderer == null)
+            {
+                return;
+            }
+
+            visualRootSpriteRenderer.sprite = sprite;
+            visualRootSpriteRenderer.enabled = sprite != null;
         }
 
         private void OnEnable()
@@ -363,6 +378,25 @@ namespace Refresh
             StopWalkBob();
             KillReactionTween();
             ResetVisualTransform();
+        }
+
+        private void ResolveVisualSpriteRenderer()
+        {
+            if (visualRootSpriteRenderer != null)
+            {
+                return;
+            }
+
+            if (visualRoot == null)
+            {
+                return;
+            }
+
+            visualRootSpriteRenderer = visualRoot.GetComponent<SpriteRenderer>();
+            if (visualRootSpriteRenderer == null)
+            {
+                visualRootSpriteRenderer = visualRoot.GetComponentInChildren<SpriteRenderer>();
+            }
         }
 
         private Vector3 GetWaitingPosition()
