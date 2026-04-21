@@ -48,6 +48,8 @@ namespace Refresh
         private Tween _moveTween;
         private Tween _walkBobTween;
         private Tween _reactionTween;
+        private bool _isInitialized;
+        private bool _hasLifecycleStarted;
 
         public CustomerState State { get; private set; }
         public DrinkData CurrentOrder => _currentOrder;
@@ -59,7 +61,15 @@ namespace Refresh
                 visualRoot = transform;
             }
 
-            BeginCustomerLifecycle();
+            TryStartLifecycle();
+        }
+
+        public void Initialize(Transform waiting, Transform exit)
+        {
+            waitingPoint = waiting;
+            exitPoint = exit;
+            _isInitialized = true;
+            TryStartLifecycle();
         }
 
         private void OnEnable()
@@ -72,6 +82,7 @@ namespace Refresh
 
         private void OnDisable()
         {
+            _hasLifecycleStarted = false;
             KillAllTweens();
 
             if (heatBar != null)
@@ -82,6 +93,7 @@ namespace Refresh
 
         public void BeginCustomerLifecycle()
         {
+            _hasLifecycleStarted = true;
             KillAllTweens();
 
             if (_stateRoutine != null)
@@ -90,6 +102,20 @@ namespace Refresh
             }
 
             _stateRoutine = StartCoroutine(CustomerLifecycleRoutine());
+        }
+
+        private void TryStartLifecycle()
+        {
+            if (_hasLifecycleStarted)
+            {
+                return;
+            }
+
+            // Auto-start works for either explicit spawner initialization or manual scene assignment.
+            if (_isInitialized || (waitingPoint != null && exitPoint != null))
+            {
+                BeginCustomerLifecycle();
+            }
         }
 
         public bool TryServeDrink(DrinkData servedDrink)

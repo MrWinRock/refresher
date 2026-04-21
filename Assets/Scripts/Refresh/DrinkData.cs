@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 
 namespace Refresh
 {
@@ -6,6 +7,7 @@ namespace Refresh
     public class DrinkData : ScriptableObject
     {
         [Header("Display")]
+        [ShowAssetPreview]
         public Sprite drinkIcon;
     }
 }

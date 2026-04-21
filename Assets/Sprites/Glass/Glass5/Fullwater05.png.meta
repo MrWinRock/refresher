@@ -118,94 +118,6 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fullwater05_0
-      rect:
-        serializedVersion: 2
-        x: 168
-        y: 2895
-        width: 338
-        height: 199
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b8d66b64374829f70800000000000000
-      internalID: 9192555420059069835
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fullwater05_1
-      rect:
-        serializedVersion: 2
-        x: 502
-        y: 2808
-        width: 120
-        height: 181
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 309c772559388b2f0800000000000000
-      internalID: -956870243459282685
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fullwater05_2
-      rect:
-        serializedVersion: 2
-        x: 520
-        y: 2759
-        width: 60
-        height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0f07fc612a740cca0800000000000000
-      internalID: -5998715942164533008
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fullwater05_3
-      rect:
-        serializedVersion: 2
-        x: 574
-        y: 2500
-        width: 222
-        height: 296
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 01a1af486d1aa5c30800000000000000
-      internalID: 4348966332905691664
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Fullwater05_4
       rect:
         serializedVersion: 2
@@ -214,7 +126,7 @@ TextureImporter:
         width: 1219
         height: 1969
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -227,55 +139,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Fullwater05_5
-      rect:
-        serializedVersion: 2
-        x: 563
-        y: 2716
-        width: 31
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0170aef82481f1100800000000000000
-      internalID: 80809992477345552
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fullwater05_6
-      rect:
-        serializedVersion: 2
-        x: 398
-        y: 2032
-        width: 229
-        height: 262
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 282b595340fbc8ff0800000000000000
-      internalID: -32441072498658686
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 236e4593c3dbfdc4084dc1efc73c5a0a
     internalID: 0
     vertices: []
     indices: 
@@ -292,6 +160,8 @@ TextureImporter:
       Fullwater05_4: -1437098183141149060
       Fullwater05_5: 80809992477345552
       Fullwater05_6: -32441072498658686
+      Fullwater05_7: -1768108862
+      Fullwater05_8: -1346469611
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
