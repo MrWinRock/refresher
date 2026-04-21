@@ -2,15 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Midground
   - Water
   - UI
+  - Foreground
+  - Background
+  - ObjInScene
+  - SceneTransition
   - 
   - 
   - 
@@ -41,3 +45,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 470137453
+    locked: 0
+  - name: Particle
+    uniqueID: 4272962837
+    locked: 0
+  - name: Midground
+    uniqueID: 1770262337
+    locked: 0
+  - name: Foreground
+    uniqueID: 304083175
+    locked: 0
+  - name: ObjInScene
+    uniqueID: 300756739
+    locked: 0
+  - name: SceneTransition
+    uniqueID: 1182449031
+    locked: 0
+  m_RenderingLayers:
+  - Default
