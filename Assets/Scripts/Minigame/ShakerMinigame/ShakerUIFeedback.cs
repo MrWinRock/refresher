@@ -33,15 +33,16 @@ namespace Minigame.ShakerMinigame
 
         public void SetScore(int score)
         {
-            if (scoreLabel != null)
+            if (scoreLabel)
             {
                 scoreLabel.text = $"Score: {score}";
             }
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void ShowJudgement(JudgementTier tier, Vector3 worldPosition)
         {
-            if (floatingTextPrefab == null || textCanvasRoot == null)
+            if (!floatingTextPrefab || !textCanvasRoot)
             {
                 return;
             }
@@ -49,8 +50,17 @@ namespace Minigame.ShakerMinigame
             var text = Instantiate(floatingTextPrefab, textCanvasRoot);
             var rect = text.rectTransform;
 
-            var cam = Camera.main;
-            Vector2 screenPoint = cam == null
+            var canvas = textCanvasRoot.GetComponentInParent<Canvas>();
+            bool isOverlay = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay;
+
+            Camera cam = isOverlay ? null : (canvas != null ? canvas.worldCamera : Camera.main);
+            if (!isOverlay && cam == null)
+            {
+                Destroy(text.gameObject);
+                return;
+            }
+
+            var screenPoint = isOverlay
                 ? (Vector2)worldPosition
                 : RectTransformUtility.WorldToScreenPoint(cam, worldPosition);
 

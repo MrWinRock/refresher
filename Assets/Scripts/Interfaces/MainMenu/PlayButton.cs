@@ -1,3 +1,4 @@
+using Interfaces.MainMenu;
 using UnityEngine;
 
 public class PlayButton : MonoBehaviour

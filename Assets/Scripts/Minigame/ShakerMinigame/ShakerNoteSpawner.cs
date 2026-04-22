@@ -6,8 +6,7 @@ namespace Minigame.ShakerMinigame
 {
     public class ShakerNoteSpawner : MonoBehaviour
     {
-        [Header("Spawn")]
-        [SerializeField] private ShakerNoteController notePrefab;
+        [Header("Spawn")] [SerializeField] private ShakerNoteController notePrefab;
         [SerializeField] private RectTransform spawnArea;
         [SerializeField] private float spawnInterval = 0.6f;
         [SerializeField] private int maxActiveNotes = 4;
@@ -151,27 +150,58 @@ namespace Minigame.ShakerMinigame
             }
         }
 
+        private static readonly ArrowDirection[] AvailableDirections =
+        {
+            ArrowDirection.Up,
+            ArrowDirection.Down,
+            ArrowDirection.Left,
+            ArrowDirection.Right
+        };
+
         private bool TryGetNextDirection(out ArrowDirection selected)
         {
             selected = ArrowDirection.Up;
-            var candidates = new List<ArrowDirection>(4)
+            var validCount = 0;
+
+            for (var i = 0; i < AvailableDirections.Length; i++)
             {
-                ArrowDirection.Up,
-                ArrowDirection.Down,
-                ArrowDirection.Left,
-                ArrowDirection.Right
-            };
+                var direction = AvailableDirections[i];
+                if (_activeDirections.Contains(direction) ||
+                    (_previousDirection.HasValue && _previousDirection.Value == direction))
+                {
+                    continue;
+                }
 
-            // Enforce no active-direction conflict and no direct consecutive repeat.
-            candidates.RemoveAll(direction => _activeDirections.Contains(direction) || (_previousDirection.HasValue && _previousDirection.Value == direction));
+                validCount++;
+            }
 
-            if (candidates.Count == 0)
+            if (validCount == 0)
             {
                 return false;
             }
 
-            selected = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-            return true;
+            var selectedValidIndex = UnityEngine.Random.Range(0, validCount);
+            var currentValidIndex = 0;
+
+            for (var i = 0; i < AvailableDirections.Length; i++)
+            {
+                var direction = AvailableDirections[i];
+                if (_activeDirections.Contains(direction) ||
+                    (_previousDirection.HasValue && _previousDirection.Value == direction))
+                {
+                    continue;
+                }
+
+                if (currentValidIndex == selectedValidIndex)
+                {
+                    selected = direction;
+                    return true;
+                }
+
+                currentValidIndex++;
+            }
+
+            return false;
         }
 
         private static Vector2 GetRandomAnchoredPosition(RectTransform area)
@@ -183,5 +213,3 @@ namespace Minigame.ShakerMinigame
         }
     }
 }
-
-

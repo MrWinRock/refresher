@@ -94,13 +94,14 @@ Quick editor test harness:
 * **MrWinRock** - IDK
 * **LOVERnoey** - Lead Developer
 * **Marguro** - Project Manager/Game Designer
-* **Taki** - IDK
+* **Taki** - Developer
 
 ## 🎨 Art Design
 
-* **zazO1** - Lead Art
+* **zazO1** - Art Director
 * **Art2** - IDK
 * **Art3** - IDK
+* **Art4** - IDK
 
 ## 📝 License
 
