@@ -8,12 +8,14 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("References")]
-    [SerializeField] private FruitPoolManager    fruitPoolManager;
-    [SerializeField] private BeltController      beltController;
-    [SerializeField] private TargetQueueManager  targetQueueManager;
-    [SerializeField] private ScoreManager        scoreManager;
-    [SerializeField] private UIManager           uiManager;
-    [SerializeField] private InputHandler        inputHandler;
+    [SerializeField] private FruitPoolManager   fruitPoolManager;
+    [SerializeField] private BeltController     beltController;
+    [SerializeField] private TargetQueueManager targetQueueManager;
+    [SerializeField] private BoostMode          boostMode;   // แทน ScoreManager
+    [SerializeField] private UIManager          uiManager;
+    [SerializeField] private InputHandler       inputHandler;
+
+    private PointManager pointManager;  // plain class สร้างใน GameLoop
 
     public GameState CurrentState { get; private set; } = GameState.Idle;
 
@@ -23,8 +25,19 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    void OnEnable()  => inputHandler.OnSpacePressed += HandleSpacePressed;
-    void OnDisable() => inputHandler.OnSpacePressed -= HandleSpacePressed;
+    void OnEnable()
+    {
+        inputHandler.OnSpacePressed += HandleSpacePressed;
+        boostMode.OnBoostStart      += HandleBoostStart;
+        boostMode.OnBoostEnd        += HandleBoostEnd;
+    }
+
+    void OnDisable()
+    {
+        inputHandler.OnSpacePressed -= HandleSpacePressed;
+        boostMode.OnBoostStart      -= HandleBoostStart;
+        boostMode.OnBoostEnd        -= HandleBoostEnd;
+    }
 
     public void StartGame()
     {
@@ -35,9 +48,14 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameLoop()
     {
         SetState(GameState.Loading);
+
         fruitPoolManager.InitializePool();
-        scoreManager.Reset();
+        boostMode.ResetBoost();
         targetQueueManager.GenerateQueue();
+
+        // สร้าง PointManager ใหม่ทุกรอบ โดยใช้จำนวน target เป็น max
+        pointManager = new PointManager(targetQueueManager.Count);
+
         uiManager.ShowTargetQueue(targetQueueManager.GetQueueSnapshot());
 
         yield return null;
@@ -56,7 +74,12 @@ public class GameManager : MonoBehaviour
         bool isMatch = pressed != null && expected != null
                        && pressed.fruitId == expected.fruitId;
 
-        scoreManager.Register(isMatch);
+        // อัปเดต PointManager
+        pointManager.AddPoints(isMatch ? 1f : 0f);
+
+        // อัปเดต BoostMode (fever) — hit เท่านั้นที่สะสม boost
+        if (isMatch) boostMode.AddBoostPoints(1f);
+
         uiManager.ShowMatchResult(isMatch);
         targetQueueManager.Dequeue();
         uiManager.ShowTargetQueue(targetQueueManager.GetQueueSnapshot());
@@ -72,10 +95,13 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        float fever = scoreManager.CalculateFever();
+        float fever = pointManager.FeverScore;  // point / object.count
         SetState(GameState.Result);
-        uiManager.ShowResult(scoreManager.Point, fever);
+        uiManager.ShowResult((int)pointManager.TotalPoints, fever);
     }
+
+    private void HandleBoostStart() => uiManager.ShowBoostEffect(true);
+    private void HandleBoostEnd()   => uiManager.ShowBoostEffect(false);
 
     private void SetState(GameState next)
     {

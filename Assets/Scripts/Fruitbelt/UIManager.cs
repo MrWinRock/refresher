@@ -23,6 +23,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI resultFeverText;
     [SerializeField] private TextMeshProUGUI stateLabel;
 
+    [Header("Boost / Fever")]
+    [SerializeField] private GameObject boostEffectOverlay;  // particle / glow effect
+
+
     // ── Public API ───────────────────────────────────────────────
 
     public void ShowTargetQueue(FruitData[] queue)
@@ -40,6 +44,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowBoostEffect(bool isActive)
+{
+    boostEffectOverlay?.SetActive(isActive);
+}
     public void ShowMatchResult(bool isHit)
     {
         if (isHit)
