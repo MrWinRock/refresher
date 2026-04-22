@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using DG.Tweening;
 using Refresh;
@@ -41,6 +41,7 @@ namespace Game5
         private bool _isStartInputLocked;
         private Coroutine _afterMinigameCoroutine;
 
+        public bool IsPlaying => _isPlaying || _isTransitioning;
         public event Action MinigameExitCompleted;
 
         private void Awake()
@@ -86,30 +87,7 @@ namespace Game5
 
         private void Update()
         {
-            if (_isPlaying || _isTransitioning)
-            {
-                return;
-            }
-
-            if (_isStartInputLocked)
-            {
-                return;
-            }
-
-            if (Keyboard.current == null)
-            {
-                return;
-            }
-
-            if (!CanAcceptStartInput())
-            {
-                return;
-            }
-
-            if (Keyboard.current[startKey].wasPressedThisFrame)
-            {
-                StartMinigame();
-            }
+            // Input handling moved to MinigameSequenceManager
         }
 
         public void StartMinigame()

@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using Refresh;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -37,8 +37,10 @@ namespace Game5
         private DrinkData _preparedDrinkData;
         private Coroutine _startInputUnlockCoroutine;
 
+        public bool IsWaitingForServe => _isWaitingForServe;
+
         private void Awake()
-        {
+{
             ResolveRefsIfNeeded();
             CachePreparedDrinkPositions(true);
             HidePreparedDrinkInstant();

@@ -88,7 +88,7 @@ public class BoostMode : MonoBehaviour
 
     private IEnumerator BoostTimer()
     {
-        yield return new WaitForSeconds(boostDuration);
+        yield return new WaitForSeconds(BoostDuration);
 
         _boostPoints = 0f;
         BoostPointsChanged?.Invoke(_boostPoints, DefaultThreshold);

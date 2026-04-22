@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
@@ -365,7 +365,7 @@ namespace Game5
             {
                 _pointManager.AddPoints(pointsEarned);
                 totalPoints = _pointManager.TotalPoints;
-                normalizedPoints = _pointManager.CalculatePoints();
+                normalizedPoints = _pointManager.CalculateBoostPoint();
                 boostPointsToAdd = normalizedPoints;
             }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Minigame.ShakerMinigame
 {
@@ -27,8 +27,10 @@ namespace Minigame.ShakerMinigame
         private bool _isRunning;
         private int _resolvedNotes;
 
+        public event System.Action MinigameFinished;
+
         private void OnEnable()
-        {
+{
             if (inputHandler != null)
             {
                 inputHandler.ArrowPressed += OnArrowPressed;
@@ -103,7 +105,8 @@ namespace Minigame.ShakerMinigame
             _isRunning = false;
             noteSpawner?.Stop();
             minigameManager?.CompleteMinigame(minigameId, Mathf.RoundToInt(_rhythm.TotalPoints));
-        }
+            MinigameFinished?.Invoke();
+            }
 
         // ReSharper disable Unity.PerformanceAnalysis
         private void OnArrowPressed(ArrowDirection direction, float hitTime)
