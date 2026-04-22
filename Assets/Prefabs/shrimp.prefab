@@ -136,4 +136,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ed6a7429a560346901bb39a6ce2f6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FruitObject
-  fruitImage: {fileID: 148702219482691493}
+  spriteRenderer: {fileID: 148702219482691493}

@@ -68,11 +68,10 @@ public class BeltController : MonoBehaviour
         RecycleFruits();
     }
 
-    // ── Private ──────────────────────────────────────────────────
 
-    /// <summary>
+
     /// คำนวณ spawnX / despawnX จาก Camera viewport — รองรับทุก resolution
-    /// </summary>
+
     private void CalculateScreenBounds()
     {
         if (gameCamera == null) gameCamera = Camera.main;

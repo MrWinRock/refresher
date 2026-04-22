@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
         foreach (FruitData data in queue)
         {
             GameObject slot = Instantiate(targetSlotPrefab, targetSlotParent);
-            Image img = slot.GetComponentInChildren<Image>();
+            SpriteRenderer img = slot.GetComponentInChildren<SpriteRenderer>();
             if (img != null) img.sprite = data.sprite;
         }
     }
@@ -48,32 +48,44 @@ public class UIManager : MonoBehaviour
 {
     boostEffectOverlay?.SetActive(isActive);
 }
+ 
     public void ShowMatchResult(bool isHit)
     {
         if (isHit)
         {
-            hitFeedback?.SetActive(true);
-            Invoke(nameof(HideHitFeedback), 0.4f);
+            // ตรวจสอบว่ามี Reference หรือไม่ก่อนเรียกใช้งาน
+            if (hitFeedback != null) 
+            {
+                hitFeedback.SetActive(true);
+                Invoke(nameof(HideHitFeedback), 0.4f);
+            }
         }
         else
         {
-            missFeedback?.SetActive(true);
-            Invoke(nameof(HideMissFeedback), 0.4f);
+            if (missFeedback != null)
+            {
+                missFeedback.SetActive(true);
+                Invoke(nameof(HideMissFeedback), 0.4f);
+            }
         }
     }
 
     public void ShowResult(int point, float fever)
     {
-        resultPanel?.SetActive(true);
-        if (resultScoreText != null) resultScoreText.text = $"Score: {point}";
-        if (resultFeverText  != null) resultFeverText.text  = $"Fever: {(fever * 100f):0}%";
-        if (feverSlider      != null) feverSlider.value     = fever;
+        if (!ValidateResultReferences()) return;
+        
+        resultPanel.SetActive(true);
+        resultScoreText.text = $"Score: {point}";
+        resultFeverText.text = $"Fever: {(fever * 100f):0}%";
+        if (feverSlider != null) feverSlider.value = fever;
     }
 
     public void UpdateStateDisplay(GameState state)
     {
-        if (stateLabel != null) stateLabel.text = state.ToString();
-        if (resultPanel != null) resultPanel.SetActive(state == GameState.Result);
+        if (!ValidateResultReferences()) return;
+        
+        stateLabel.text = state.ToString();
+        resultPanel.SetActive(state == GameState.Result);
     }
 
     public void SetInteractable(bool on) { /* ขยายได้ตามต้องการ */ }
@@ -82,4 +94,33 @@ public class UIManager : MonoBehaviour
 
     private void HideHitFeedback()  => hitFeedback?.SetActive(false);
     private void HideMissFeedback() => missFeedback?.SetActive(false);
+
+    private bool ValidateResultReferences()
+    {
+        if (resultPanel == null)
+        {
+            Debug.LogWarning("[UIManager] resultPanel is not assigned!");
+            return false;
+        }
+        
+        if (resultScoreText == null)
+        {
+            Debug.LogWarning("[UIManager] resultScoreText is not assigned!");
+            return false;
+        }
+        
+        if (resultFeverText == null)
+        {
+            Debug.LogWarning("[UIManager] resultFeverText is not assigned!");
+            return false;
+        }
+        
+        if (stateLabel == null)
+        {
+            Debug.LogWarning("[UIManager] stateLabel is not assigned!");
+            return false;
+        }
+        
+        return true;
+    }
 }

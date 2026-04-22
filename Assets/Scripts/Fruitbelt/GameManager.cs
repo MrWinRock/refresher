@@ -11,11 +11,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private FruitPoolManager   fruitPoolManager;
     [SerializeField] private BeltController     beltController;
     [SerializeField] private TargetQueueManager targetQueueManager;
-    [SerializeField] private BoostMode          boostMode;   // แทน ScoreManager
+    [SerializeField] private BoostMode          boostMode;
     [SerializeField] private UIManager          uiManager;
     [SerializeField] private InputHandler       inputHandler;
 
-    private PointManager pointManager;  // plain class สร้างใน GameLoop
+    private PointManager pointManager;
 
     public GameState CurrentState { get; private set; } = GameState.Idle;
 
@@ -25,19 +25,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    void OnEnable()
-    {
-        inputHandler.OnSpacePressed += HandleSpacePressed;
-        boostMode.OnBoostStart      += HandleBoostStart;
-        boostMode.OnBoostEnd        += HandleBoostEnd;
-    }
-
-    void OnDisable()
-    {
-        inputHandler.OnSpacePressed -= HandleSpacePressed;
-        boostMode.OnBoostStart      -= HandleBoostStart;
-        boostMode.OnBoostEnd        -= HandleBoostEnd;
-    }
+    void OnEnable()  => inputHandler.OnSpacePressed += HandleSpacePressed;
+    void OnDisable() => inputHandler.OnSpacePressed -= HandleSpacePressed;
 
     public void StartGame()
     {
@@ -50,10 +39,9 @@ public class GameManager : MonoBehaviour
         SetState(GameState.Loading);
 
         fruitPoolManager.InitializePool();
-        boostMode.ResetBoost();
         targetQueueManager.GenerateQueue();
 
-        // สร้าง PointManager ใหม่ทุกรอบ โดยใช้จำนวน target เป็น max
+        // สร้าง PointManager ใหม่ทุกรอบ ใช้จำนวน target เป็น max
         pointManager = new PointManager(targetQueueManager.Count);
 
         uiManager.ShowTargetQueue(targetQueueManager.GetQueueSnapshot());
@@ -74,10 +62,10 @@ public class GameManager : MonoBehaviour
         bool isMatch = pressed != null && expected != null
                        && pressed.fruitId == expected.fruitId;
 
-        // อัปเดต PointManager
+        // PointManager — เพิ่ม 1 ถ้าถูก, 0 ถ้าผิด
         pointManager.AddPoints(isMatch ? 1f : 0f);
 
-        // อัปเดต BoostMode (fever) — hit เท่านั้นที่สะสม boost
+        // BoostMode — เพิ่มเฉพาะตอน hit
         if (isMatch) boostMode.AddBoostPoints(1f);
 
         uiManager.ShowMatchResult(isMatch);
@@ -95,13 +83,11 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        float fever = pointManager.FeverScore;  // point / object.count
+        // ใช้ CalculatePoints() ตรงๆ ตามที่ PointManager มีให้
+        float fever = pointManager.CalculatePoints();
         SetState(GameState.Result);
         uiManager.ShowResult((int)pointManager.TotalPoints, fever);
     }
-
-    private void HandleBoostStart() => uiManager.ShowBoostEffect(true);
-    private void HandleBoostEnd()   => uiManager.ShowBoostEffect(false);
 
     private void SetState(GameState next)
     {

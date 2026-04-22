@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ed6a7429a560346901bb39a6ce2f6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FruitObject
-  fruitImage: {fileID: 7932659182902789118}
+  spriteRenderer: {fileID: 7932659182902789118}
 --- !u!1 &7598464276535888218
 GameObject:
   m_ObjectHideFlags: 0
