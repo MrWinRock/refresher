@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
 
@@ -30,6 +31,9 @@ namespace Game5
         [SerializeField] private float goodLateTolerance = 0.20f;
         [SerializeField] private float maxTotalPoints = 1f;
 
+        [Header("Lifecycle")]
+        [SerializeField] private bool autoBeginOnEnable = false;
+
         private Quaternion _initialShakerRotation;
         private bool _hasStartedPouring;
         private bool _overflowed;
@@ -37,6 +41,7 @@ namespace Game5
         private float _pourStartTime;
         private PointManager _pointManager;
         private BoostMode _boostMode;
+        private bool _isMinigameActive;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -53,6 +58,8 @@ namespace Game5
         [SerializeField, ReadOnly] private string lastResult = "-";
 
         public bool IsFinished => _isFinished;
+        public bool IsMinigameActive => _isMinigameActive;
+        public event Action MinigameFinished;
 
         private void Awake()
         {
@@ -77,8 +84,27 @@ namespace Game5
             RefreshDebugPourMetrics();
         }
 
+        private void OnEnable()
+        {
+            if (autoBeginOnEnable)
+            {
+                BeginMinigame();
+            }
+            else
+            {
+                ResetMinigame();
+            }
+        }
+
         private void Update()
         {
+            if (!_isMinigameActive)
+            {
+                ReturnShakerToInitialRotation();
+                StopStream();
+                return;
+            }
+
             if (_isFinished)
             {
                 ReturnShakerToInitialRotation();
@@ -197,9 +223,47 @@ namespace Game5
             }
 
             _isFinished = true;
+            _isMinigameActive = false;
             finalPourTime = elapsedPourTime;
             StopStream();
             EvaluateResult();
+            MinigameFinished?.Invoke();
+        }
+
+        public void BeginMinigame()
+        {
+            _isMinigameActive = true;
+            _hasStartedPouring = false;
+            _overflowed = false;
+            _isFinished = false;
+            _pourStartTime = 0f;
+            elapsedPourTime = 0f;
+            finalPourTime = 0f;
+            pointsEarned = 0f;
+            boostPointsToAdd = 0f;
+            lastResult = "-";
+            SetWaterY(minY);
+            StopStream();
+            ReturnShakerToInitialRotation();
+            RefreshDebugPourMetrics();
+        }
+
+        public void ResetMinigame()
+        {
+            _isMinigameActive = false;
+            _hasStartedPouring = false;
+            _overflowed = false;
+            _isFinished = false;
+            _pourStartTime = 0f;
+            elapsedPourTime = 0f;
+            finalPourTime = 0f;
+            pointsEarned = 0f;
+            boostPointsToAdd = 0f;
+            lastResult = "-";
+            SetWaterY(minY);
+            StopStream();
+            ReturnShakerToInitialRotation();
+            RefreshDebugPourMetrics();
         }
 
         private void EvaluateResult()

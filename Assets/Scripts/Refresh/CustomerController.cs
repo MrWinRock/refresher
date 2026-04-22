@@ -223,7 +223,7 @@ namespace Refresh
             yield return MoveTo(targetExitPosition, moveDuration);
 
             StopWalkBob();
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
         private DrinkData PickRandomDrink()

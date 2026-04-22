@@ -44,9 +44,6 @@ TagManager:
   - name: Background
     uniqueID: 470137453
     locked: 0
-  - name: Particle
-    uniqueID: 4272962837
-    locked: 0
   - name: Midground
     uniqueID: 1770262337
     locked: 0
@@ -70,6 +67,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 304083175
+    locked: 0
+  - name: Particle
+    uniqueID: 4272962837
     locked: 0
   - name: ObjInScene
     uniqueID: 300756739

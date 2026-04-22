@@ -9,5 +9,9 @@ namespace Refresh
         [Header("Display")]
         [ShowAssetPreview]
         public Sprite drinkIcon;
+
+        [Header("Serving")]
+        [ShowAssetPreview]
+        public Sprite servedGlassSprite;
     }
 }
