@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace Game5
 {
     [DisallowMultipleComponent]
-    public class PouringDrinkServingController : MonoBehaviour
+    public class ServingController : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private PouringMinigameTransitionController transitionController;
@@ -22,6 +22,11 @@ namespace Game5
         [SerializeField] private float preparedHiddenOffsetY = -8.81f;
         [SerializeField] private float preparedTransitionDuration = 0.35f;
         [SerializeField] private Ease preparedTransitionEase = Ease.OutCubic;
+
+        [Header("Serve Animation")]
+        [SerializeField] private Vector3 servedForwardLocalOffset = new Vector3(0f, 1.6f, 0f);
+        [SerializeField] private float servedForwardDuration = 0.2f;
+        [SerializeField] private Ease servedForwardEase = Ease.OutCubic;
 
         private Tween _preparedDrinkTween;
         private Vector3 _preparedShownLocalPosition;
@@ -153,7 +158,7 @@ namespace Game5
             // This prevents pressing Space to serve from immediately re-triggering
             // the pouring minigame that also listens for Space.
             StartUnlockStartInputNextFrame();
-            HidePreparedDrinkAnimated();
+            PlayServeForwardAnimated();
             _preparedDrinkCustomer = null;
             _preparedDrinkData = null;
         }
@@ -243,6 +248,31 @@ namespace Game5
                     if (preparedDrinkRoot != null)
                     {
                         preparedDrinkRoot.SetActive(false);
+                    }
+                });
+        }
+
+        private void PlayServeForwardAnimated()
+        {
+            if (preparedDrinkRoot == null)
+            {
+                return;
+            }
+
+            var duration = servedForwardDuration > 0f ? servedForwardDuration : preparedTransitionDuration;
+            var ease = servedForwardDuration > 0f ? servedForwardEase : preparedTransitionEase;
+            var forwardTarget = _preparedShownLocalPosition + servedForwardLocalOffset;
+
+            KillPreparedDrinkTween();
+            _preparedDrinkTween = preparedDrinkRoot.transform
+                .DOLocalMove(forwardTarget, duration)
+                .SetEase(ease)
+                .OnComplete(() =>
+                {
+                    if (preparedDrinkRoot != null)
+                    {
+                        preparedDrinkRoot.SetActive(false);
+                        preparedDrinkRoot.transform.localPosition = _preparedHiddenLocalPosition;
                     }
                 });
         }

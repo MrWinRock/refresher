@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &405426806497320513
+--- !u!1 &2249573762682065390
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5958923083304901327}
-  - component: {fileID: 9153799692298493540}
+  - component: {fileID: 5871427604948615334}
+  - component: {fileID: 3620402816523767270}
   m_Layer: 0
   m_Name: WaterGuide
   m_TagString: Untagged
@@ -17,29 +17,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5958923083304901327
+--- !u!4 &5871427604948615334
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405426806497320513}
+  m_GameObject: {fileID: 2249573762682065390}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3624367650511043266}
+  m_Father: {fileID: 8347853318764587664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &9153799692298493540
+--- !u!212 &3620402816523767270
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405426806497320513}
+  m_GameObject: {fileID: 2249573762682065390}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -80,8 +80,8 @@ SpriteRenderer:
   m_SortingLayerID: 300756739
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_MaskInteraction: 1
-  m_Sprite: {fileID: -2563650079913995904, guid: 2ab25ba4631a92e4dbe14fbee3ab9e83, type: 3}
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 5144381513134571984, guid: 94477c459c5753e41bab12ac91958acc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.64705884}
   m_FlipX: 0
   m_FlipY: 0
@@ -91,7 +91,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1552496522943286738
+--- !u!1 &3556526929611913438
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,43 +99,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3624367650511043266}
-  - component: {fileID: 2411895207494775497}
-  - component: {fileID: 5085868086722029230}
-  - component: {fileID: 5530202344115252703}
-  - component: {fileID: 8155623436394024700}
+  - component: {fileID: 8347853318764587664}
+  - component: {fileID: 4441897594820797238}
+  - component: {fileID: 3769611248655591045}
   m_Layer: 6
-  m_Name: Drink01
+  m_Name: Drink05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3624367650511043266
+  m_IsActive: 0
+--- !u!4 &8347853318764587664
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552496522943286738}
+  m_GameObject: {fileID: 3556526929611913438}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.07, y: -1.67, z: 0}
+  m_LocalPosition: {x: 0, y: -0.92662, z: 0}
   m_LocalScale: {x: 0.225266, y: 0.225266, z: 0.225266}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6038082550580949221}
-  - {fileID: 5958923083304901327}
+  - {fileID: 6552158012857479145}
+  - {fileID: 5871427604948615334}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2411895207494775497
+--- !u!212 &4441897594820797238
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552496522943286738}
+  m_GameObject: {fileID: 3556526929611913438}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -177,7 +175,7 @@ SpriteRenderer:
   m_SortingLayer: 12
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8846166176488974732, guid: 7ee9445cc7089a64f8c5aae17152edc0, type: 3}
+  m_Sprite: {fileID: -2825546942058161173, guid: 4e0ed19ca887be84a890561a39fab21a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -187,72 +185,13 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!331 &5085868086722029230
-SpriteMask:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552496522943286738}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 15d0c3709176029428a0da2f8cecf0b5, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_Sprite: {fileID: -2563650079913995904, guid: 3371ab8c97081a94dbe442da46a9f092, type: 3}
-  m_MaskAlphaCutoff: 0.2
-  m_FrontSortingLayerID: 0
-  m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 0
-  m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
-  m_SpriteSortPoint: 0
-  m_MaskSource: 0
---- !u!68 &5530202344115252703
+--- !u!68 &3769611248655591045
 EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552496522943286738}
+  m_GameObject: {fileID: 3556526929611913438}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -283,33 +222,30 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -4.0873337, y: 6.1354227}
-  - {x: -3.0819166, y: 0.7106812}
-  - {x: -1.7830435, y: -4.3157673}
-  - {x: 0.0913862, y: -4.6283765}
-  - {x: 1.6482033, y: -4.103844}
-  - {x: 2.651507, y: -1.9520488}
-  - {x: 3.728427, y: 5.955218}
+  - {x: -4.0372014, y: 7.622476}
+  - {x: -3.5115013, y: 4.222136}
+  - {x: -3.1569412, y: 2.534267}
+  - {x: -2.914157, y: 1.8013557}
+  - {x: -2.9383898, y: 1.4280676}
+  - {x: -2.776916, y: 0.40008888}
+  - {x: -2.0707097, y: -1.5515919}
+  - {x: -1.8275461, y: -2.5339475}
+  - {x: -1.274295, y: -4.009635}
+  - {x: -0.9794479, y: -5.281729}
+  - {x: -0.09649019, y: -5.7426496}
+  - {x: 1.0650096, y: -5.437662}
+  - {x: 1.6395197, y: -3.090138}
+  - {x: 2.0983143, y: -1.1996245}
+  - {x: 2.365739, y: -0.40845495}
+  - {x: 3.0316164, y: 1.504473}
+  - {x: 3.3351607, y: 3.8526998}
+  - {x: 3.6224632, y: 5.4007797}
+  - {x: 3.8222494, y: 7.751936}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!114 &8155623436394024700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552496522943286738}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 970ea4710e854554a949e41c79213ac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game5.PouringDrinkVisualRig
-  waterObject: {fileID: 6038082550580949221}
-  waterRenderer: {fileID: 2411895207494775497}
-  waterGuideRenderer: {fileID: 9153799692298493540}
---- !u!1 &3666530332956167053
+--- !u!1 &4792799321483413475
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -317,38 +253,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6038082550580949221}
-  - component: {fileID: 869794642844189682}
+  - component: {fileID: 6552158012857479145}
+  - component: {fileID: 3301049663013571304}
+  - component: {fileID: 8108643873864970106}
   m_Layer: 0
-  m_Name: Water01
+  m_Name: Water05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6038082550580949221
+--- !u!4 &6552158012857479145
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3666530332956167053}
+  m_GameObject: {fileID: 4792799321483413475}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.222, z: 0}
-  m_LocalScale: {x: 1, y: 0.964004, z: 1}
+  m_LocalPosition: {x: 0, y: 0.94000006, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3624367650511043266}
+  m_Father: {fileID: 8347853318764587664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &869794642844189682
+--- !u!212 &3301049663013571304
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3666530332956167053}
+  m_GameObject: {fileID: 4792799321483413475}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -367,7 +304,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: b8fb5fb51fad03d4b9ccecc46ee11a92, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -389,8 +326,8 @@ SpriteRenderer:
   m_SortingLayerID: 300756739
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_MaskInteraction: 1
-  m_Sprite: {fileID: -2563650079913995904, guid: 2ab25ba4631a92e4dbe14fbee3ab9e83, type: 3}
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 5144381513134571984, guid: 94477c459c5753e41bab12ac91958acc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -400,3 +337,15 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8108643873864970106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4792799321483413475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0fc6ae92ef7304880a2cb722bce6e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game5.WaterFillController

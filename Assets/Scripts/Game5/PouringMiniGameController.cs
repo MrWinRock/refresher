@@ -1,30 +1,44 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
+using Refresh;
 
 namespace Game5
 {
+    [System.Serializable]
+    public struct DrinkMinigameEntry
+    {
+        public DrinkData drinkData;
+        public GameObject drinkObject;
+    }
+
     [DisallowMultipleComponent]
     public class PouringMiniGameController : MonoBehaviour
     {
         [Header("Scene References")]
         [SerializeField] private Transform shaker;
         [SerializeField] private ParticleSystem streamParticles;
-        [SerializeField] private Transform waterObject;
+
+        [Header("Drink Entries")]
+        [SerializeField] private DrinkMinigameEntry[] drinkEntries;
+
+        // Bound at runtime in BeginMinigame — not assigned in Inspector
+        private Transform waterObject;
+        private WaterFillController waterFill;
 
         [Header("Water Range (Local Y)")]
         [SerializeField] private float minY = -1f;
         [SerializeField] private float maxY = 1f;
 
         [Header("Pour Setup")]
-        [SerializeField] private float fillSpeed = 0.5f;
+        private float fillSpeed = 0.5f;
         [SerializeField] private float pourAngle = 60f;
         [SerializeField] private float rotationSpeed = 180f;
         [SerializeField] private bool clearParticlesOnStop;
 
         [Header("Scoring (Time)")]
-        [SerializeField] private float perfectTimeSeconds = 5.539817f;
+        private float perfectTimeSeconds = 5.539817f;
         [SerializeField] private float perfectEarlyTolerance = 0.12f;
         [SerializeField] private float perfectLateTolerance = 0.05f;
         [SerializeField] private float goodEarlyTolerance = 0.35f;
@@ -42,6 +56,7 @@ namespace Game5
         private PointManager _pointManager;
         private BoostMode _boostMode;
         private bool _isMinigameActive;
+        private float _currentY;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -68,13 +83,6 @@ namespace Game5
                 shaker = transform;
             }
 
-            if (waterObject == null)
-            {
-                Debug.LogError("PouringMiniGameController requires a waterObject reference.", this);
-                enabled = false;
-                return;
-            }
-
             _initialShakerRotation = shaker.localRotation;
             _pointManager = new PointManager(maxTotalPoints > 0f ? maxTotalPoints : 1f);
             _boostMode = FindFirstObjectByType<BoostMode>();
@@ -88,7 +96,8 @@ namespace Game5
         {
             if (autoBeginOnEnable)
             {
-                BeginMinigame();
+                var defaultData = drinkEntries != null && drinkEntries.Length > 0 ? drinkEntries[0].drinkData : null;
+                BeginMinigame(defaultData);
             }
             else
             {
@@ -164,22 +173,27 @@ namespace Game5
 
         private bool RaiseWater()
         {
-            float currentY = waterObject.localPosition.y;
-            float nextY = Mathf.MoveTowards(currentY, maxY, fillSpeed * Time.deltaTime);
+            float nextY = Mathf.MoveTowards(_currentY, maxY, fillSpeed * Time.deltaTime);
             SetWaterY(nextY);
             return Mathf.Approximately(nextY, maxY) || nextY >= maxY;
         }
 
         private void SetWaterY(float y)
         {
-            if (waterObject == null)
+            _currentY = Mathf.Clamp(y, minY, maxY);
+
+            if (waterFill != null)
             {
-                return;
+                waterFill.SetFillAmount(Mathf.InverseLerp(minY, maxY, _currentY));
+            }
+            else if (waterObject != null)
+            {
+                // Legacy fallback: move transform when no WaterFillController is wired up.
+                Vector3 localPos = waterObject.localPosition;
+                localPos.y = _currentY;
+                waterObject.localPosition = localPos;
             }
 
-            Vector3 localPos = waterObject.localPosition;
-            localPos.y = Mathf.Clamp(y, minY, maxY);
-            waterObject.localPosition = localPos;
             RefreshDebugPourMetrics();
         }
 
@@ -230,8 +244,9 @@ namespace Game5
             MinigameFinished?.Invoke();
         }
 
-        public void BeginMinigame()
+        public void BeginMinigame(DrinkData data)
         {
+            ActivateAndBindDrink(data);
             _isMinigameActive = true;
             _hasStartedPouring = false;
             _overflowed = false;
@@ -266,6 +281,55 @@ namespace Game5
             RefreshDebugPourMetrics();
         }
 
+        private void ActivateAndBindDrink(DrinkData data)
+        {
+            waterObject = null;
+            waterFill = null;
+
+            if (drinkEntries == null || drinkEntries.Length == 0)
+            {
+                Debug.LogWarning("PouringMiniGameController: No DrinkEntries configured. Assign drink entries in the Inspector.", this);
+                return;
+            }
+
+            for (var i = 0; i < drinkEntries.Length; i++)
+            {
+                var entry = drinkEntries[i];
+                if (entry.drinkObject == null)
+                {
+                    continue;
+                }
+
+                var isMatch = entry.drinkData == data;
+                entry.drinkObject.SetActive(isMatch);
+
+                if (isMatch)
+                {
+                    waterFill = entry.drinkObject.GetComponentInChildren<WaterFillController>(true);
+                    waterObject = waterFill != null ? waterFill.transform : entry.drinkObject.transform;
+                }
+            }
+
+            if (data == null)
+            {
+                return;
+            }
+
+            fillSpeed = data.fillSpeed;
+            perfectTimeSeconds = data.perfectTimeSeconds;
+
+            if (streamParticles != null)
+            {
+                var main = streamParticles.main;
+                main.startColor = data.particleStartColor;
+            }
+
+            if (waterObject == null)
+            {
+                Debug.LogWarning($"PouringMiniGameController: No DrinkEntry matched DrinkData '{data.name}'. Check DrinkEntries in the Inspector.", this);
+            }
+        }
+
         private void EvaluateResult()
         {
             float earlyDelta = perfectTimeSeconds - finalPourTime;
@@ -275,7 +339,7 @@ namespace Game5
 
             string result;
 
-            bool isOverflow = _overflowed || waterObject.localPosition.y >= maxY;
+            bool isOverflow = _overflowed || _currentY >= maxY;
             pointsEarned = 0f;
 
             if (isOverflow)
@@ -321,14 +385,7 @@ namespace Game5
 
         private void RefreshDebugPourMetrics()
         {
-            if (waterObject == null)
-            {
-                return;
-            }
-
-            float currentNormalized = Mathf.InverseLerp(minY, maxY, waterObject.localPosition.y);
-
-            pouredPercent = Mathf.Clamp01(currentNormalized) * 100f;
+            pouredPercent = Mathf.Clamp01(Mathf.InverseLerp(minY, maxY, _currentY)) * 100f;
             targetTimeDebug = perfectTimeSeconds;
             deltaTimeDebug = finalPourTime - perfectTimeSeconds;
         }
@@ -370,5 +427,3 @@ namespace Game5
 #endif
     }
 }
-
-

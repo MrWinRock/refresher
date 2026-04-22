@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using DG.Tweening;
+using Refresh;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +18,9 @@ namespace Game5
 
         [Header("Input")]
         [SerializeField] private Key startKey = Key.Space;
+
+        [Header("After Minigame")]
+        [SerializeField] private float afterMinigameDelay = 0f;
 
         [Header("Transition")]
         [SerializeField] private bool useCurrentPositionAsShownPosition = true;
@@ -34,6 +39,7 @@ namespace Game5
         private Tween _transitionTween;
         private bool _hasCachedShownPosition;
         private bool _isStartInputLocked;
+        private Coroutine _afterMinigameCoroutine;
 
         public event Action MinigameExitCompleted;
 
@@ -69,6 +75,12 @@ namespace Game5
                 pouringMiniGameController.MinigameFinished -= HandleMinigameFinished;
             }
 
+            if (_afterMinigameCoroutine != null)
+            {
+                StopCoroutine(_afterMinigameCoroutine);
+                _afterMinigameCoroutine = null;
+            }
+
             KillTransitionTween();
         }
 
@@ -89,6 +101,11 @@ namespace Game5
                 return;
             }
 
+            if (!CanAcceptStartInput())
+            {
+                return;
+            }
+
             if (Keyboard.current[startKey].wasPressedThisFrame)
             {
                 StartMinigame();
@@ -102,6 +119,11 @@ namespace Game5
                 return;
             }
 
+            if (!CanAcceptStartInput())
+            {
+                return;
+            }
+
             CachePositions(false);
             ResolveTextBubbleRootIfNeeded();
 
@@ -111,7 +133,7 @@ namespace Game5
             }
 
             pouringMinigameRoot.SetActive(true);
-            pouringMiniGameController?.BeginMinigame();
+            pouringMiniGameController?.BeginMinigame(FindWaitingCustomerDrinkData());
 
             _isTransitioning = true;
             KillTransitionTween();
@@ -150,7 +172,45 @@ namespace Game5
 
         private void HandleMinigameFinished()
         {
+            if (afterMinigameDelay > 0f)
+            {
+                if (_afterMinigameCoroutine != null)
+                {
+                    StopCoroutine(_afterMinigameCoroutine);
+                }
+
+                _afterMinigameCoroutine = StartCoroutine(DelayedEndMinigame());
+            }
+            else
+            {
+                EndMinigame();
+            }
+        }
+
+        private IEnumerator DelayedEndMinigame()
+        {
+            yield return new WaitForSeconds(afterMinigameDelay);
+            _afterMinigameCoroutine = null;
             EndMinigame();
+        }
+
+        private DrinkData FindWaitingCustomerDrinkData()
+        {
+            var customers = FindObjectsByType<CustomerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            for (var i = 0; i < customers.Length; i++)
+            {
+                if (customers[i].State == CustomerController.CustomerState.Waiting)
+                {
+                    return customers[i].CurrentOrder;
+                }
+            }
+
+            return null;
+        }
+
+        private bool CanAcceptStartInput()
+        {
+            return FindWaitingCustomerDrinkData() != null;
         }
 
         private void ResolveTextBubbleRootIfNeeded()

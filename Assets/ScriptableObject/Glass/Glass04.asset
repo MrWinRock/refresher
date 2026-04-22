@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: Glass04
   m_EditorClassIdentifier: Assembly-CSharp::Refresh.DrinkData
   drinkIcon: {fileID: 5930044239191962139, guid: 9a1e38d6bbfcb6949899982b4437f04d, type: 3}
+  servedGlassSprite: {fileID: 0}
+  particleStartColor: {r: 1, g: 0.90588236, b: 0.9019608, a: 1}
+  fillSpeed: 3
+  perfectTimeSeconds: 2.799908
