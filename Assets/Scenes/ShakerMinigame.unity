@@ -286,7 +286,6 @@ GameObject:
   - component: {fileID: 163720335}
   - component: {fileID: 163720334}
   - component: {fileID: 163720333}
-  - component: {fileID: 163720332}
   - component: {fileID: 163720331}
   - component: {fileID: 163720330}
   - component: {fileID: 163720329}
@@ -370,18 +369,6 @@ MonoBehaviour:
   greatVfx: {fileID: 0}
   goodVfx: {fileID: 0}
   badVfx: {fileID: 0}
---- !u!114 &163720332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 163720327}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e126b08b5954193af0ecc77b8a68379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Minigame.ShakerMinigame.ShakerScoreManager
 --- !u!114 &163720333
 MonoBehaviour:
   m_ObjectHideFlags: 0
