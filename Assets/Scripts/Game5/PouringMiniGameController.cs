@@ -12,6 +12,7 @@ namespace Game5
         [SerializeField] private Transform shaker;
         [SerializeField] private ParticleSystem streamParticles;
         [SerializeField] private Transform waterObject;
+        [SerializeField] private WaterFillController waterFill;
 
         [Header("Water Range (Local Y)")]
         [SerializeField] private float minY = -1f;
@@ -42,6 +43,7 @@ namespace Game5
         private PointManager _pointManager;
         private BoostMode _boostMode;
         private bool _isMinigameActive;
+        private float _currentY;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -164,22 +166,27 @@ namespace Game5
 
         private bool RaiseWater()
         {
-            float currentY = waterObject.localPosition.y;
-            float nextY = Mathf.MoveTowards(currentY, maxY, fillSpeed * Time.deltaTime);
+            float nextY = Mathf.MoveTowards(_currentY, maxY, fillSpeed * Time.deltaTime);
             SetWaterY(nextY);
             return Mathf.Approximately(nextY, maxY) || nextY >= maxY;
         }
 
         private void SetWaterY(float y)
         {
-            if (waterObject == null)
+            _currentY = Mathf.Clamp(y, minY, maxY);
+
+            if (waterFill != null)
             {
-                return;
+                waterFill.SetFillAmount(Mathf.InverseLerp(minY, maxY, _currentY));
+            }
+            else if (waterObject != null)
+            {
+                // Legacy fallback: move transform when no WaterFillController is wired up.
+                Vector3 localPos = waterObject.localPosition;
+                localPos.y = _currentY;
+                waterObject.localPosition = localPos;
             }
 
-            Vector3 localPos = waterObject.localPosition;
-            localPos.y = Mathf.Clamp(y, minY, maxY);
-            waterObject.localPosition = localPos;
             RefreshDebugPourMetrics();
         }
 
@@ -275,7 +282,7 @@ namespace Game5
 
             string result;
 
-            bool isOverflow = _overflowed || waterObject.localPosition.y >= maxY;
+            bool isOverflow = _overflowed || _currentY >= maxY;
             pointsEarned = 0f;
 
             if (isOverflow)
@@ -321,14 +328,7 @@ namespace Game5
 
         private void RefreshDebugPourMetrics()
         {
-            if (waterObject == null)
-            {
-                return;
-            }
-
-            float currentNormalized = Mathf.InverseLerp(minY, maxY, waterObject.localPosition.y);
-
-            pouredPercent = Mathf.Clamp01(currentNormalized) * 100f;
+            pouredPercent = Mathf.Clamp01(Mathf.InverseLerp(minY, maxY, _currentY)) * 100f;
             targetTimeDebug = perfectTimeSeconds;
             deltaTimeDebug = finalPourTime - perfectTimeSeconds;
         }
