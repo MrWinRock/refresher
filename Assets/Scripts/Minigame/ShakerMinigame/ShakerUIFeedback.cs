@@ -31,11 +31,11 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private ParticleSystem goodVfx;
         [SerializeField] private ParticleSystem badVfx;
 
-        public void SetScore(int score)
+        public void SetScore(float score)
         {
             if (scoreLabel)
             {
-                scoreLabel.text = $"Score: {score}";
+                scoreLabel.text = $"Score: {score:F1}";
             }
         }
 

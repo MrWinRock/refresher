@@ -377,7 +377,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163720327}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e126b08b5954193af0ecc77b8a68379, type: 3}
   m_Name: 
@@ -397,19 +397,19 @@ MonoBehaviour:
   windows:
   - threshold: 0.045
     tier: 0
-    score: 300
+    points: 1
   - threshold: 0.09
     tier: 1
-    score: 200
+    points: 0.7
   - threshold: 0.14
     tier: 2
-    score: 100
+    points: 0.5
   - threshold: 0.22
     tier: 3
-    score: 25
+    points: 0
   timingWindowScale: 1
   perfectBonusSeconds: 0.015
-  feverPerfectScore: 300
+  feverPerfectPoints: 1
 --- !u!114 &163720334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,11 +455,11 @@ MonoBehaviour:
   noteSpawner: {fileID: 163720335}
   inputHandler: {fileID: 163720334}
   timingJudge: {fileID: 163720333}
-  scoreManager: {fileID: 163720332}
   uiFeedback: {fileID: 163720331}
   bartenderAnimator: {fileID: 163720330}
   minigameId: ShakerMinigame
-  targetNoteCount: 8
+  minNoteCount: 4
+  maxNoteCount: 8
   startOnEnable: 1
   debugMode: 0
 --- !u!1 &163894461
@@ -1020,7 +1020,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 25, y: 25}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

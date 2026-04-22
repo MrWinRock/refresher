@@ -24,20 +24,20 @@ namespace Minigame.ShakerMinigame
     {
         [Min(0f)] public float threshold;
         public JudgementTier tier;
-        public int score;
+        [Min(0f)] public float points;
     }
 
     public readonly struct ShakerJudgementResult
     {
-        public ShakerJudgementResult(JudgementTier tier, int awardedScore, float deltaT)
+        public ShakerJudgementResult(JudgementTier tier, float awardedPoints, float deltaT)
         {
             Tier = tier;
-            AwardedScore = awardedScore;
+            AwardedPoints = awardedPoints;
             DeltaT = deltaT;
         }
 
         public JudgementTier Tier { get; }
-        public int AwardedScore { get; }
+        public float AwardedPoints { get; }
         public float DeltaT { get; }
     }
 }

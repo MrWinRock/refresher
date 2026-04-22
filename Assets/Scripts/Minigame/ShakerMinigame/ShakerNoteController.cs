@@ -53,7 +53,7 @@ namespace Minigame.ShakerMinigame
 
         public ArrowDirection Direction { get; private set; }
         public float TargetHitTime { get; private set; }
-        public float SpawnTime { get; private set; }
+        private float SpawnTime { get; set; }
         public float ExpireTime { get; private set; }
 
         public void Initialize(ArrowDirection direction, float spawnTime, float targetHitTime, float expireTime, Action<ShakerNoteController, float> onExpired)

@@ -9,18 +9,20 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private ShakerNoteSpawner noteSpawner;
         [SerializeField] private ShakerInputHandler inputHandler;
         [SerializeField] private ShakerTimingJudge timingJudge;
-        [SerializeField] private ShakerScoreManager scoreManager;
         [SerializeField] private ShakerUIFeedback uiFeedback;
         [SerializeField] private BartenderShakeAnimator bartenderAnimator;
 
         [Header("Flow")]
         [SerializeField] private string minigameId = "ShakerMinigame";
-        [SerializeField] private int targetNoteCount = 24;
+        [SerializeField] private int minNoteCount = 4;
+        [SerializeField] private int maxNoteCount = 8;
         [SerializeField] private bool startOnEnable = true;
 
         [Header("Debug")]
         [SerializeField] private bool debugMode;
 
+        private int _targetNoteCount;
+        private PointManager _rhythm;
         private bool _feverMode;
         private bool _isRunning;
         private int _resolvedNotes;
@@ -36,11 +38,6 @@ namespace Minigame.ShakerMinigame
             if (noteSpawner != null)
             {
                 noteSpawner.NoteExpired += OnNoteExpired;
-            }
-
-            if (scoreManager != null)
-            {
-                scoreManager.ScoreChanged += OnScoreChanged;
             }
 
             if (minigameManager != null)
@@ -68,11 +65,6 @@ namespace Minigame.ShakerMinigame
                 noteSpawner.NoteExpired -= OnNoteExpired;
             }
 
-            if (scoreManager != null)
-            {
-                scoreManager.ScoreChanged -= OnScoreChanged;
-            }
-
             if (minigameManager != null)
             {
                 minigameManager.FeverModeChanged -= OnFeverModeChanged;
@@ -89,11 +81,13 @@ namespace Minigame.ShakerMinigame
             _resolvedNotes = 0;
             _isRunning = true;
 
-            scoreManager?.ResetScore();
-            noteSpawner?.Begin(timingJudge != null ? timingJudge.MaxWindow : 0.2f);
+            _targetNoteCount = Random.Range(minNoteCount, maxNoteCount + 1);
+            _rhythm = new PointManager(Mathf.Max(1, _targetNoteCount));
+            uiFeedback?.SetScore(0f);
+            noteSpawner?.Begin(timingJudge ? timingJudge.MaxWindow : 0.2f);
             minigameManager?.RequestMinigame(minigameId);
 
-            if (debugMode && timingJudge != null)
+            if (debugMode && timingJudge)
             {
                 Debug.Log($"[QTE] Timing Ranges -> {timingJudge.BuildRangeSummary()}");
             }
@@ -108,12 +102,13 @@ namespace Minigame.ShakerMinigame
 
             _isRunning = false;
             noteSpawner?.Stop();
-            minigameManager?.CompleteMinigame(minigameId, scoreManager != null ? scoreManager.CurrentScore : 0);
+            minigameManager?.CompleteMinigame(minigameId, Mathf.RoundToInt(_rhythm.TotalPoints));
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private void OnArrowPressed(ArrowDirection direction, float hitTime)
         {
-            if (!_isRunning || noteSpawner == null)
+            if (!_isRunning || !noteSpawner)
             {
                 return;
             }
@@ -124,6 +119,7 @@ namespace Minigame.ShakerMinigame
             }
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private void OnAnyKeyPressed(float hitTime)
         {
             if (!_isRunning || !_feverMode || noteSpawner == null)
@@ -137,18 +133,18 @@ namespace Minigame.ShakerMinigame
             }
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private void OnNoteExpired(ShakerNoteController note)
         {
-            if (!_isRunning || note == null)
+            if (!_isRunning || !note)
             {
                 return;
             }
 
-            // Expired notes are still scored as part of no-fail flow.
             var now = Time.time;
             var result = timingJudge != null
                 ? timingJudge.Evaluate(note.ExpireTime, note.TargetHitTime, false)
-                : new ShakerJudgementResult(JudgementTier.Bad, 0, Mathf.Abs(now - note.TargetHitTime));
+                : new ShakerJudgementResult(JudgementTier.Bad, 0f, Mathf.Abs(now - note.TargetHitTime));
 
             ApplyResult(note, result, now, note.Direction);
         }
@@ -162,7 +158,7 @@ namespace Minigame.ShakerMinigame
 
             var result = timingJudge != null
                 ? timingJudge.Evaluate(hitTime, note.TargetHitTime, forceFever)
-                : new ShakerJudgementResult(JudgementTier.Bad, 0, Mathf.Abs(hitTime - note.TargetHitTime));
+                : new ShakerJudgementResult(JudgementTier.Bad, 0f, Mathf.Abs(hitTime - note.TargetHitTime));
 
             noteSpawner?.RemoveNote(note);
             ApplyResult(note, result, hitTime, pressedDirection);
@@ -170,7 +166,8 @@ namespace Minigame.ShakerMinigame
 
         private void ApplyResult(ShakerNoteController note, ShakerJudgementResult result, float hitTime, ArrowDirection pressedDirection)
         {
-            scoreManager?.AddScore(result.AwardedScore);
+            _rhythm.AddPoints(result.AwardedPoints);
+            uiFeedback?.SetScore(_rhythm.TotalPoints);
             uiFeedback?.ShowJudgement(result.Tier, note.transform.position);
 
             if (result.Tier != JudgementTier.Bad)
@@ -179,27 +176,21 @@ namespace Minigame.ShakerMinigame
             }
 
             _resolvedNotes++;
-            if (_resolvedNotes >= targetNoteCount)
+            if (_resolvedNotes >= _targetNoteCount)
             {
                 EndMinigame();
             }
 
             if (debugMode)
             {
-                var score = scoreManager != null ? scoreManager.CurrentScore : 0;
                 var rangeLabel = "N/A";
-                if (timingJudge != null && timingJudge.TryGetTierRange(result.Tier, out var minRange, out var maxRange))
+                if (timingJudge && timingJudge.TryGetTierRange(result.Tier, out var minRange, out var maxRange))
                 {
                     rangeLabel = $"{minRange:F3}-{maxRange:F3}s";
                 }
 
-                Debug.Log($"[QTE] Key: {pressedDirection} | Thit: {hitTime:F3} | Tobj: {note.TargetHitTime:F3} | deltaT: {result.DeltaT:F3} | Range: {rangeLabel} | Result: {result.Tier} | Score: {score}");
+                Debug.Log($"[QTE] Key: {pressedDirection} | Thit: {hitTime:F3} | Tobj: {note.TargetHitTime:F3} | deltaT: {result.DeltaT:F3} | Range: {rangeLabel} | Result: {result.Tier}");
             }
-        }
-
-        private void OnScoreChanged(int score)
-        {
-            uiFeedback?.SetScore(score);
         }
 
         private void OnFeverModeChanged(bool isEnabled)

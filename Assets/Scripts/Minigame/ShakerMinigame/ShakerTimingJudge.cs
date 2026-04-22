@@ -10,10 +10,10 @@ namespace Minigame.ShakerMinigame
         [Header("Timing Windows (seconds)")]
         [SerializeField] private ShakerJudgementWindow[] windows =
         {
-            new() { threshold = 0.06f, tier = JudgementTier.Perfect, score = 300 },
-            new() { threshold = 0.11f, tier = JudgementTier.Great, score = 200 },
-            new() { threshold = 0.17f, tier = JudgementTier.Good, score = 100 },
-            new() { threshold = 0.26f, tier = JudgementTier.Bad, score = 25 }
+            new() { threshold = 0.06f, tier = JudgementTier.Perfect, points = 1f },
+            new() { threshold = 0.11f, tier = JudgementTier.Great, points = 0.7f },
+            new() { threshold = 0.17f, tier = JudgementTier.Good, points = 0.5f },
+            new() { threshold = 0.26f, tier = JudgementTier.Bad, points = 0f }
         };
 
         [Header("Range Adjust")]
@@ -24,7 +24,8 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private float perfectBonusSeconds = 0.02f;
 
         [Header("Fever")]
-        [SerializeField] private int feverPerfectScore = 300;
+        [Min(0f)]
+        [SerializeField] private float feverPerfectPoints = 1f;
 
         private ShakerJudgementWindow[] _orderedWindows;
 
@@ -51,7 +52,7 @@ namespace Minigame.ShakerMinigame
 
             if (_orderedWindows.Length == 0)
             {
-                _orderedWindows = new[] { new ShakerJudgementWindow { threshold = 0.2f, tier = JudgementTier.Bad, score = 0 } };
+                _orderedWindows = new[] { new ShakerJudgementWindow { threshold = 0.2f, tier = JudgementTier.Bad, points = 0f } };
             }
         }
 
@@ -61,7 +62,7 @@ namespace Minigame.ShakerMinigame
 
             if (feverMode)
             {
-                return new ShakerJudgementResult(JudgementTier.Perfect, feverPerfectScore, deltaT);
+                return new ShakerJudgementResult(JudgementTier.Perfect, feverPerfectPoints, deltaT);
             }
 
             foreach (var window in _orderedWindows)
@@ -69,11 +70,11 @@ namespace Minigame.ShakerMinigame
                 var effectiveThreshold = GetEffectiveThreshold(window);
                 if (deltaT <= effectiveThreshold)
                 {
-                    return new ShakerJudgementResult(window.tier, window.score, deltaT);
+                    return new ShakerJudgementResult(window.tier, window.points, deltaT);
                 }
             }
 
-            return new ShakerJudgementResult(JudgementTier.Bad, 0, deltaT);
+            return new ShakerJudgementResult(JudgementTier.Bad, 0f, deltaT);
         }
 
         public bool TryGetTierRange(JudgementTier tier, out float minInclusive, out float maxInclusive)
