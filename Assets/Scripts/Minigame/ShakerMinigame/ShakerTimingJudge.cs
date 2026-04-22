@@ -28,7 +28,7 @@ namespace Minigame.ShakerMinigame
 
         private ShakerJudgementWindow[] _orderedWindows;
 
-        public float MaxWindow => _orderedWindows.Length == 0 ? 0.2f : _orderedWindows[^1].threshold * timingWindowScale;
+        public float MaxWindow => _orderedWindows == null || _orderedWindows.Length == 0 ? 0.2f : GetEffectiveThreshold(_orderedWindows[^1]);
 
         private void Awake()
         {
