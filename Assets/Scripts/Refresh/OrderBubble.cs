@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Refresh
 {
@@ -10,7 +11,15 @@ namespace Refresh
         [SerializeField] private Image drinkIcon;
         [SerializeField] private CanvasGroup bubbleCanvasGroup;
 
+        [Header("DOTween")]
+        [SerializeField] private float popupFromScale = 0.82f;
+        [SerializeField] private float popupScaleDuration = 0.18f;
+        [SerializeField] private float popupFadeDuration = 0.12f;
+        [SerializeField] private Ease popupEase = Ease.OutBack;
+
         private Sprite _defaultBackgroundSprite;
+        private Tween _popupTween;
+        private Tween _fadeTween;
 
         private void Awake()
         {
@@ -53,10 +62,12 @@ namespace Refresh
             }
 
             SetVisible(true);
+            PlayPopupTween();
         }
 
         public void Hide()
         {
+            KillTweens();
 
             if (drinkIcon != null)
             {
@@ -68,7 +79,50 @@ namespace Refresh
                 bubbleBackground.enabled = false;
             }
 
+            var targetTransform = bubbleRoot != null ? bubbleRoot.transform : transform;
+            if (targetTransform != null)
+            {
+                targetTransform.localScale = Vector3.one;
+            }
+
             SetVisible(false);
+        }
+
+        private void PlayPopupTween()
+        {
+            var targetTransform = bubbleRoot != null ? bubbleRoot.transform : transform;
+            if (targetTransform == null)
+            {
+                return;
+            }
+
+            KillTweens();
+
+            targetTransform.localScale = Vector3.one * Mathf.Max(0.01f, popupFromScale);
+            _popupTween = targetTransform.DOScale(Vector3.one, popupScaleDuration).SetEase(popupEase);
+
+            if (bubbleCanvasGroup != null)
+            {
+                bubbleCanvasGroup.alpha = 0f;
+                _fadeTween = DOTween.To(() => bubbleCanvasGroup.alpha, value => bubbleCanvasGroup.alpha = value, 1f, popupFadeDuration)
+                    .SetEase(Ease.OutSine);
+            }
+        }
+
+        private void KillTweens()
+        {
+            if (_popupTween != null && _popupTween.IsActive())
+            {
+                _popupTween.Kill();
+            }
+
+            if (_fadeTween != null && _fadeTween.IsActive())
+            {
+                _fadeTween.Kill();
+            }
+
+            _popupTween = null;
+            _fadeTween = null;
         }
 
         private void SetVisible(bool isVisible)

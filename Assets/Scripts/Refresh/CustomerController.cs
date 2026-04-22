@@ -18,8 +18,12 @@ namespace Refresh
         [Header("References")]
         [SerializeField] private HeatBar heatBar;
         [SerializeField] private OrderBubble orderBubble;
+        [SerializeField] private TextBubble textBubble;
         [SerializeField] private Transform visualRoot;
         [SerializeField] private SpriteRenderer visualRootSpriteRenderer;
+
+        [Header("Prompt")]
+        [SerializeField] private string startMinigamePromptText = "SPACEBAR";
 
         [Header("Order")]
         [SerializeField] private List<DrinkData> availableDrinks = new List<DrinkData>();
@@ -99,6 +103,7 @@ namespace Refresh
         {
             _hasLifecycleStarted = false;
             KillAllTweens();
+            HidePromptBubble();
 
             if (heatBar != null)
             {
@@ -188,6 +193,7 @@ namespace Refresh
 
             State = CustomerState.Waiting;
             orderBubble?.ShowOrder(_currentOrder);
+            textBubble?.ShowText(startMinigamePromptText);
             heatBar?.Activate(this);
         }
 
@@ -195,6 +201,7 @@ namespace Refresh
         {
             State = CustomerState.Satisfied;
             heatBar?.StopDrain();
+            HidePromptBubble();
             StopWalkBob();
             yield return PlaySatisfiedTween();
             yield return new WaitForSeconds(satisfiedDelay);
@@ -207,6 +214,7 @@ namespace Refresh
 
             heatBar?.StopDrain();
             orderBubble?.Hide();
+            HidePromptBubble();
 
             yield return PlayLeaveTween();
             StartWalkBob();
@@ -398,6 +406,12 @@ namespace Refresh
                 visualRootSpriteRenderer = visualRoot.GetComponentInChildren<SpriteRenderer>();
             }
         }
+
+        private void HidePromptBubble()
+        {
+            textBubble?.Hide();
+        }
+
 
         private Vector3 GetWaitingPosition()
         {

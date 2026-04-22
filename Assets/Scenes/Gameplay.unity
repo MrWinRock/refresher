@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abc807c7fc5a42389f8e75fe0d64417d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Refresh.CustomerSpawner
-  customerPrefab: {fileID: 6087687685681845700, guid: ee1b5938e55b18c46bde968e027c26e2, type: 3}
+  customerPrefab: {fileID: 7801661748149841209, guid: fc43bceee8ef7084f9f69406348baafb, type: 3}
   waitingPoint: {fileID: 637168511}
   exitPoint: {fileID: 1662479090}
   spawnPoint: {fileID: 1583016689}
