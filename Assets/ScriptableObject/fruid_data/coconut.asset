@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a761ac8e9c3a8934d9da1d4c0c9edf58, type: 3}
+  m_Name: coconut
+  m_EditorClassIdentifier: Assembly-CSharp::FruitData
+  fruitId: coconut
+  fruitName: Coconut
+  sprite: {fileID: 3415579226381933368, guid: 552f06143da12744b894942cc6aa6347, type: 3}
+  tintColor: {r: 1, g: 1, b: 1, a: 1}
+  spawnWeight: 1
