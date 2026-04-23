@@ -1,12 +1,16 @@
-using Interfaces.MainMenu;
 using UnityEngine;
+using UnityEngine.Playables;
 
-public class PlayButton : MonoBehaviour
+namespace Interfaces.MainMenu
 {
-    [SerializeField] private string targetSceneName = "Game";
-
-    public void PlayGame()
+    public class PlayButton : MonoBehaviour
     {
-        SceneTransitionService.TransitionToScene(targetSceneName);
+        [SerializeField] private string targetSceneName = "Game";
+        [SerializeField] private PlayableDirector timelineBeforeTransition;
+
+        public void PlayGame()
+        {
+            SceneTransitionService.TransitionToScene(targetSceneName, timelineBeforeTransition);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -32,7 +33,18 @@ namespace Interfaces.MainMenu
                 return;
             }
 
-            EnsureInstance().StartTransition(sceneName);
+            EnsureInstance().StartTransition(sceneName, null);
+        }
+
+        public static void TransitionToScene(string sceneName, PlayableDirector timelineBeforeTransition)
+        {
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError("SceneTransitionService: target scene name is empty.");
+                return;
+            }
+
+            EnsureInstance().StartTransition(sceneName, timelineBeforeTransition);
         }
 
         private static SceneTransitionService EnsureInstance()
@@ -67,20 +79,25 @@ namespace Interfaces.MainMenu
             BuildOverlayIfNeeded();
         }
 
-        private void StartTransition(string sceneName)
+        private void StartTransition(string sceneName, PlayableDirector timelineBeforeTransition)
         {
             if (_isTransitioning)
             {
                 return;
             }
 
-            StartCoroutine(PlayTransition(sceneName));
+            StartCoroutine(PlayTransition(sceneName, timelineBeforeTransition));
         }
 
-        private IEnumerator PlayTransition(string sceneName)
+        private IEnumerator PlayTransition(string sceneName, PlayableDirector timelineBeforeTransition)
         {
             _isTransitioning = true;
             BuildOverlayIfNeeded();
+
+            if (timelineBeforeTransition != null)
+            {
+                yield return PlayTimelineAndWait(timelineBeforeTransition);
+            }
 
             float width = UpdateOverlaySize();
             _transitionRect.anchoredPosition = new Vector2(-width, 0f);
@@ -114,6 +131,35 @@ namespace Interfaces.MainMenu
                 .WaitForCompletion();
 
             _isTransitioning = false;
+        }
+
+        private static IEnumerator PlayTimelineAndWait(PlayableDirector timelineDirector)
+        {
+            if (timelineDirector == null || !timelineDirector.isActiveAndEnabled || timelineDirector.playableAsset == null)
+            {
+                yield break;
+            }
+
+            bool finished = false;
+            void HandleStopped(PlayableDirector stoppedDirector)
+            {
+                if (stoppedDirector == timelineDirector)
+                {
+                    finished = true;
+                }
+            }
+
+            timelineDirector.stopped += HandleStopped;
+            timelineDirector.time = 0d;
+            timelineDirector.Evaluate();
+            timelineDirector.Play();
+
+            while (!finished)
+            {
+                yield return null;
+            }
+
+            timelineDirector.stopped -= HandleStopped;
         }
 
         private void BuildOverlayIfNeeded()
