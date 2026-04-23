@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c724a7d24ca2eb4f95479ba1b201621, type: 3}
+  m_Name: CharacterDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Refresh.CharacterDatabase
+  characters:
+  - characterName: Character 1
+    normalSprite: {fileID: -940179916431770287, guid: d9972efc1ecd7f64cba6d1a125d7ceed, type: 3}
+    happySprite: {fileID: -6432127669682807383, guid: e32a835c2637b9c4db45b453fcc4ec5a, type: 3}
+    hasFeverVersion: 1
+    feverNormalSprite: {fileID: -855298285791758126, guid: f4fe8baf63be689409746e8f4fc7ef72, type: 3}
+    feverHappySprite: {fileID: 3648630456621652940, guid: bd083954ca8dc9c48a9a876645c04ced, type: 3}
+    feverReactionActionSprite: {fileID: -3234576869746941420, guid: 775c1d29fe26843468f51a8933109653, type: 3}
+    feverReactionSceneObjectName: FurryReactionImage
+    feverReactionPrefab: {fileID: 8530977415779557213, guid: 2c54eed29f003d14cb75183297283969, type: 3}
+  - characterName: Character 2
+    normalSprite: {fileID: -5876825376870369475, guid: a0b99ef30054d924b8d7ceb1a7c9835d, type: 3}
+    happySprite: {fileID: -4366438719925690727, guid: 479a1e2ee158cf448b6ba72698ec3934, type: 3}
+    hasFeverVersion: 1
+    feverNormalSprite: {fileID: 6937817954938267909, guid: 3fcf09c96e4b1b94083d18a872b21daa, type: 3}
+    feverHappySprite: {fileID: 6656777990491782475, guid: 074347f552aedd144aeae63c760e59f2, type: 3}
+    feverReactionActionSprite: {fileID: -7853793397481511554, guid: 62dce06e245ce8f4bac372455a2aa480, type: 3}
+    feverReactionSceneObjectName: AlianReactionImage
+    feverReactionPrefab: {fileID: 1973054338412971465, guid: 44583c68968b1fe40a369bc1569e6386, type: 3}
+  - characterName: Character 3
+    normalSprite: {fileID: -1751180986330380826, guid: 31566f40aae3c84408ea3bb3e0e0eb7e, type: 3}
+    happySprite: {fileID: 2107435636626895572, guid: cc6467cb3b4949345b60467190b88446, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 4
+    normalSprite: {fileID: -5811141663897462946, guid: 18d7e7ee2b3d8bd4886205e3a1d782e5, type: 3}
+    happySprite: {fileID: 6027859730909887297, guid: e337c50bc23004d42ad654ea43e9ea84, type: 3}
+    hasFeverVersion: 1
+    feverNormalSprite: {fileID: -4178046375966092550, guid: 4893c39cc3e47e9468d150f783a8cc9e, type: 3}
+    feverHappySprite: {fileID: 1036393447275659553, guid: 10269dc0ff8007d488524078fe869a04, type: 3}
+    feverReactionActionSprite: {fileID: -3650059624051532973, guid: e76fc8fda5adb7d4fa3641ac71b68d29, type: 3}
+    feverReactionSceneObjectName: WomanReactionImage
+    feverReactionPrefab: {fileID: 370266858536601290, guid: 3c951cb729909c342bcef3af9914ac03, type: 3}
+  - characterName: Character 5
+    normalSprite: {fileID: -7343472780937228198, guid: f4a270b1ea181e24a82f9d1bbba517ed, type: 3}
+    happySprite: {fileID: 9173587438145642664, guid: bf2b641ee667a9b47b90db9191094c0a, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 6
+    normalSprite: {fileID: 302552262780519070, guid: f639e78519d77684ea429179185e8c91, type: 3}
+    happySprite: {fileID: 4660579918923165994, guid: 2dd68424495a7ed4c8dccbc8863e21dd, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 7
+    normalSprite: {fileID: 1985961682200307357, guid: 0544498b41bf61749a34c237eb42fb78, type: 3}
+    happySprite: {fileID: 1780762392475158602, guid: 0cc4fcb5b73a2094288c8d8701ef63dd, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 8
+    normalSprite: {fileID: 6825580372776903861, guid: f20a97ab847ff0148927fbb539178ac1, type: 3}
+    happySprite: {fileID: 8258495991052120193, guid: b9bba3fe8388e954e9f7e382b1ac8f28, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 9
+    normalSprite: {fileID: -7054652598217034471, guid: 988a172245fb2b2468f878fbe59ba850, type: 3}
+    happySprite: {fileID: -6806839490542913978, guid: dd687f02a2cc01244969d0ba2925ae26, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 10
+    normalSprite: {fileID: 4261641199585178161, guid: 6b045d29aec5b464983856f3646a7796, type: 3}
+    happySprite: {fileID: -4928396962497333038, guid: c8770e33fb8aa2245afdc90daab4c7d7, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 11
+    normalSprite: {fileID: 1164580343270605731, guid: 3af49dc39c18ed840900d3ddfea5d1c0, type: 3}
+    happySprite: {fileID: -2528597506853245759, guid: b695aaabfc0a1764b82c2d26b3c0e120, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 12
+    normalSprite: {fileID: 2862914456856729169, guid: 878c0b52b0f75e744b07f11f6d2b5489, type: 3}
+    happySprite: {fileID: 4685988842261681699, guid: 09d74185192c89f4ea87ebd2cac6bbf7, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 13
+    normalSprite: {fileID: -6240320595229719900, guid: 6bf5a4e117283ee4dab884d90e7cd8fa, type: 3}
+    happySprite: {fileID: -468413753215825071, guid: f15d589b95750ee42832d5afe51a6dde, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}
+  - characterName: Character 14
+    normalSprite: {fileID: -6639350724981149178, guid: 2ba3a5645d34b9244987444caba68ccc, type: 3}
+    happySprite: {fileID: 7555649672636077014, guid: 7dbb8417ed70cc945b400d53c59b6b8a, type: 3}
+    hasFeverVersion: 0
+    feverNormalSprite: {fileID: 0}
+    feverHappySprite: {fileID: 0}
+    feverReactionActionSprite: {fileID: 0}
+    feverReactionSceneObjectName: 
+    feverReactionPrefab: {fileID: 0}

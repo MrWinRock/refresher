@@ -100,3 +100,7 @@ InitTestScene*.unity*
 
 # IDE
 .idea/
+.vscode/
+
+# AI
+CLAUDE.md
