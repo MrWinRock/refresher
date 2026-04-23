@@ -7,45 +7,112 @@ namespace Refresh
 {
     public class FeverActionUI : MonoBehaviour
     {
-        [SerializeField] private Image reactionImage;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private RectTransform container;
         
         [Header("Animation Settings")]
         [SerializeField] private float fadeInDuration = 0.3f;
         [SerializeField] private float fadeOutDuration = 0.5f;
-        [SerializeField] private float punchScale = 1.2f;
 
         private void Awake()
         {
             if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
             if (canvasGroup != null) canvasGroup.alpha = 0f;
-            if (reactionImage != null) reactionImage.gameObject.SetActive(false);
         }
 
-        public IEnumerator ShowReaction(Sprite reactionSprite, float duration)
+        public IEnumerator ShowReactionByName(string objectName, Sprite optionalSprite, float duration)
         {
-            if (reactionImage == null || canvasGroup == null) yield break;
+            if (canvasGroup == null) yield break;
 
-            reactionImage.sprite = reactionSprite;
-            reactionImage.gameObject.SetActive(true);
+            // Find the object by name in children (even inactive)
+            Transform reactionTransform = null;
+            Transform panelTransform = null;
             
-            // Fade in
-            canvasGroup.DOFade(1f, fadeInDuration);
-            reactionImage.transform.localScale = Vector3.one * 0.5f;
-            reactionImage.transform.DOScale(Vector3.one, fadeInDuration).SetEase(Ease.OutBack);
+            foreach (Transform child in transform)
+            {
+                if (child.name == objectName) reactionTransform = child;
+                if (child.name == "Panel") panelTransform = child;
+            }
+
+            if (reactionTransform == null)
+            {
+                Debug.LogWarning($"FeverActionUI: Could not find reaction object named '{objectName}' under {name}");
+                yield break;
+            }
+
+            // Deactivate all reaction objects first except Panel and Container
+            foreach (Transform child in transform)
+            {
+                if (child != container && child != panelTransform)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            if (panelTransform != null) panelTransform.gameObject.SetActive(true);
             
-            yield return new WaitForSeconds(fadeInDuration);
+            GameObject instance = reactionTransform.gameObject;
+            instance.SetActive(true);
+
+            if (optionalSprite != null)
+            {
+                var img = instance.GetComponent<UnityEngine.UI.Image>();
+                if (img == null) img = instance.GetComponentInChildren<UnityEngine.UI.Image>();
+                if (img != null) img.sprite = optionalSprite;
+            }
             
-            // Stay and punch
-            reactionImage.transform.DOPunchScale(Vector3.one * 0.1f, 0.5f, 5, 0.5f);
+            // Fade in master UI
+            canvasGroup.alpha = 0f;
+            canvasGroup.DOFade(1f, fadeInDuration).SetUpdate(true);
             
-            yield return new WaitForSeconds(duration);
+            // Scale animation
+            Vector3 originalScale = reactionTransform.localScale;
+            reactionTransform.localScale = originalScale * 0.5f;
+            reactionTransform.DOScale(originalScale, fadeInDuration).SetEase(Ease.OutBack).SetUpdate(true);
+            
+            yield return new WaitForSeconds(fadeInDuration + duration);
             
             // Fade out
+            canvasGroup.DOFade(0f, fadeOutDuration).SetUpdate(true);
+            
+            yield return new WaitForSeconds(fadeOutDuration);
+            
+            instance.SetActive(false);
+            if (panelTransform != null) panelTransform.gameObject.SetActive(false);
+            reactionTransform.localScale = originalScale;
+        }
+
+        public IEnumerator ShowReaction(GameObject prefab, float duration)
+        {
+            if (canvasGroup == null || prefab == null) yield break;
+
+            // Clear previous
+            foreach (Transform child in container) Destroy(child.gameObject);
+
+            // Instantiate
+            GameObject instance = Instantiate(prefab, container);
+            instance.SetActive(true);
+            
+            // Fade in master
+            canvasGroup.DOFade(1f, fadeInDuration);
+            
+            container.localScale = Vector3.one * 0.5f;
+            container.DOScale(Vector3.one, fadeInDuration).SetEase(Ease.OutBack);
+            
+            yield return new WaitForSeconds(fadeInDuration + duration);
+            
             canvasGroup.DOFade(0f, fadeOutDuration);
             yield return new WaitForSeconds(fadeOutDuration);
             
-            reactionImage.gameObject.SetActive(false);
+            Destroy(instance);
+        }
+
+        // Legacy support for sprite-only
+        public IEnumerator ShowReaction(Sprite reactionSprite, float duration)
+        {
+            // We'll create a simple dummy prefab or just handle it if needed
+            // But with the new requirement, we'll mostly use the prefab version.
+            yield break;
         }
     }
 }

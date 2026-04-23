@@ -257,15 +257,23 @@ textBubble?.ShowText(startMinigamePromptText);
 
         private IEnumerator ShowFeverActionReaction()
         {
-            // Find or get a FeverActionUI controller to show the big sprite in center
             var feverUI = FindFirstObjectByType<FeverActionUI>();
-            if (feverUI != null)
+            if (feverUI == null)
             {
-                yield return feverUI.ShowReaction(_characterData.feverReactionActionSprite, feverReactionDisplayDuration);
+                yield return PlaySatisfiedTween();
+                yield break;
+            }
+
+            if (!string.IsNullOrEmpty(_characterData.feverReactionSceneObjectName))
+            {
+                yield return feverUI.ShowReactionByName(_characterData.feverReactionSceneObjectName, _characterData.feverReactionActionSprite, feverReactionDisplayDuration);
+            }
+            else if (_characterData.feverReactionPrefab != null)
+            {
+                yield return feverUI.ShowReaction(_characterData.feverReactionPrefab, feverReactionDisplayDuration);
             }
             else
             {
-                // Fallback: just play normal satisfied
                 yield return PlaySatisfiedTween();
             }
         }

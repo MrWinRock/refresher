@@ -57,6 +57,7 @@ namespace Game5
         private BoostMode _boostMode;
         private bool _isMinigameActive;
         private float _currentY;
+        private bool _isPourInputArmed;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -120,15 +121,39 @@ namespace Game5
                 return;
             }
 
+            if (!_isPourInputArmed)
+            {
+                // Prevent key carry-over from the previous minigame.
+                if (AreAllArrowKeysReleased())
+                {
+                    _isPourInputArmed = true;
+                }
+
+                ReturnShakerToInitialRotation();
+                StopStream();
+                return;
+            }
+
+            bool isPourKeyPressedThisFrame = Keyboard.current != null && Keyboard.current.downArrowKey.wasPressedThisFrame;
             bool isHoldingPourKey = Keyboard.current != null && Keyboard.current.downArrowKey.isPressed;
 
-            if (isHoldingPourKey)
+            if (!_hasStartedPouring)
             {
-                if (!_hasStartedPouring)
+                if (isPourKeyPressedThisFrame)
                 {
                     _hasStartedPouring = true;
                     _pourStartTime = Time.time;
                 }
+                else
+                {
+                    ReturnShakerToInitialRotation();
+                    StopStream();
+                    return;
+                }
+            }
+
+            if (isHoldingPourKey)
+            {
 
                 elapsedPourTime = Time.time - _pourStartTime;
                 RotateShakerToPourAngle();
@@ -249,6 +274,7 @@ namespace Game5
             ActivateAndBindDrink(data);
             _isMinigameActive = true;
             _hasStartedPouring = false;
+            _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
             _pourStartTime = 0f;
@@ -267,6 +293,7 @@ namespace Game5
         {
             _isMinigameActive = false;
             _hasStartedPouring = false;
+            _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
             _pourStartTime = 0f;
@@ -388,6 +415,20 @@ namespace Game5
             pouredPercent = Mathf.Clamp01(Mathf.InverseLerp(minY, maxY, _currentY)) * 100f;
             targetTimeDebug = perfectTimeSeconds;
             deltaTimeDebug = finalPourTime - perfectTimeSeconds;
+        }
+
+        private static bool AreAllArrowKeysReleased()
+        {
+            var keyboard = Keyboard.current;
+            if (keyboard == null)
+            {
+                return true;
+            }
+
+            return !keyboard.upArrowKey.isPressed
+                   && !keyboard.downArrowKey.isPressed
+                   && !keyboard.leftArrowKey.isPressed
+                   && !keyboard.rightArrowKey.isPressed;
         }
 
         [ContextMenu("Calibration/Set Water Empty")]
