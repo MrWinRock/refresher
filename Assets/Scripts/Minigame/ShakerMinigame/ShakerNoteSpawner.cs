@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,8 +12,13 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private int maxActiveNotes = 4;
         [SerializeField] private float noteLeadTime = 1.0f;
 
+        [Header("FreshTime Settings")]
+        [SerializeField] private float freshTimeSpawnInterval = 0.3f;
+        [SerializeField] private float freshTimeNoteLeadTime = 0.6f;
+        [SerializeField] private float freshTimeBadWindow = 1.0f;
+
         private readonly List<ShakerNoteController> _activeNotes = new();
-        private readonly HashSet<ArrowDirection> _activeDirections = new();
+private readonly HashSet<ArrowDirection> _activeDirections = new();
 
         private ArrowDirection? _previousDirection;
         private float _nextSpawnAt;
@@ -54,14 +59,17 @@ namespace Minigame.ShakerMinigame
                 return;
             }
 
+            bool isFreshTime = BoostMode.Instance != null && BoostMode.Instance.IsBoostActive;
+            float currentInterval = isFreshTime ? freshTimeSpawnInterval : spawnInterval;
+
             if (Time.time >= _nextSpawnAt && _activeNotes.Count < maxActiveNotes)
             {
-                Spawn();
-                _nextSpawnAt = Time.time + Mathf.Max(0.05f, spawnInterval);
+                Spawn(isFreshTime);
+                _nextSpawnAt = Time.time + Mathf.Max(0.05f, currentInterval);
             }
         }
 
-        private void Spawn()
+        private void Spawn(bool isFreshTime)
         {
             if (!TryGetNextDirection(out var direction))
             {
@@ -77,8 +85,9 @@ namespace Minigame.ShakerMinigame
             }
 
             var now = Time.time;
-            var target = now + noteLeadTime;
-            var expire = target + _badWindow;
+            var leadTime = isFreshTime ? freshTimeNoteLeadTime : noteLeadTime;
+            var target = now + leadTime;
+            var expire = isFreshTime ? target + freshTimeBadWindow : target + _badWindow;
 
             note.Initialize(direction, now, target, expire, OnNoteExpiredInternally);
 

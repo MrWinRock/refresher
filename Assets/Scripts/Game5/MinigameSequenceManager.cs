@@ -18,7 +18,18 @@ namespace Game5
         [Header("Settings")]
         [SerializeField] private Key startKey = Key.Space;
 
+        [Header("FreshTime")]
+        [SerializeField] private float freshTimeAutoStartDelay = 1.5f;
+
         private bool _isShaking;
+        private bool _freshTimeActive;
+        private float _autoStartTimer;
+
+        public void SetFreshTimeActive(bool active)
+        {
+            _freshTimeActive = active;
+            _autoStartTimer = 0f; // Reset timer when state changes
+        }
 
         private void Awake()
         {
@@ -49,6 +60,25 @@ namespace Game5
             if (_isShaking) return;
             if (pouringTransitionController != null && pouringTransitionController.IsPlaying) return;
             if (servingController != null && servingController.IsWaitingForServe) return;
+
+            if (_freshTimeActive)
+            {
+                // Only start if a customer is waiting
+                if (FindWaitingCustomerDrinkData() != null)
+                {
+                    _autoStartTimer += Time.deltaTime;
+                    if (_autoStartTimer >= freshTimeAutoStartDelay)
+                    {
+                        TryStartSequence();
+                        _autoStartTimer = 0f;
+                    }
+                }
+                else
+                {
+                    _autoStartTimer = 0f;
+                }
+                return;
+            }
 
             if (Keyboard.current == null) return;
 

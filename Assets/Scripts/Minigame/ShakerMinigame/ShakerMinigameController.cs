@@ -23,11 +23,17 @@ namespace Minigame.ShakerMinigame
 
         private int _targetNoteCount;
         private PointManager _rhythm;
+        private BoostMode _boostMode;
         private bool _feverMode;
         private bool _isRunning;
         private int _resolvedNotes;
 
         public event System.Action MinigameFinished;
+
+        private void Awake()
+        {
+            _boostMode = FindFirstObjectByType<BoostMode>();
+        }
 
         private void OnEnable()
 {
@@ -105,6 +111,10 @@ namespace Minigame.ShakerMinigame
             _isRunning = false;
             noteSpawner?.Stop();
             minigameManager?.CompleteMinigame(minigameId, Mathf.RoundToInt(_rhythm.TotalPoints));
+
+            if (_boostMode == null) _boostMode = FindFirstObjectByType<BoostMode>();
+            _boostMode?.AddBoostPoints(_rhythm.CalculateBoostPoint());
+
             MinigameFinished?.Invoke();
             }
 

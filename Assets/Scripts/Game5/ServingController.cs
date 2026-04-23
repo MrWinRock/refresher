@@ -28,6 +28,9 @@ namespace Game5
         [SerializeField] private float servedForwardDuration = 0.2f;
         [SerializeField] private Ease servedForwardEase = Ease.OutCubic;
 
+        [Header("FreshTime")]
+        [SerializeField] private float freshTimeAutoServeDelay = 0.5f;
+
         private Tween _preparedDrinkTween;
         private Vector3 _preparedShownLocalPosition;
         private Vector3 _preparedHiddenLocalPosition;
@@ -36,8 +39,20 @@ namespace Game5
         private CustomerController _preparedDrinkCustomer;
         private DrinkData _preparedDrinkData;
         private Coroutine _startInputUnlockCoroutine;
+        private Coroutine _autoServeCoroutine;
+        private bool _freshTimeActive;
 
         public bool IsWaitingForServe => _isWaitingForServe;
+
+        public void SetFreshTimeActive(bool active)
+        {
+            _freshTimeActive = active;
+            if (!active && _autoServeCoroutine != null)
+            {
+                StopCoroutine(_autoServeCoroutine);
+                _autoServeCoroutine = null;
+            }
+        }
 
         private void Awake()
 {
@@ -63,20 +78,38 @@ namespace Game5
                 transitionController.SetStartInputLocked(false);
             }
 
+            if (_autoServeCoroutine != null)
+            {
+                StopCoroutine(_autoServeCoroutine);
+                _autoServeCoroutine = null;
+            }
+
             KillPreparedDrinkTween();
         }
 
         private void Update()
         {
-            if (!_isWaitingForServe || Keyboard.current == null)
+            if (!_isWaitingForServe) return;
+
+            if (_freshTimeActive && _autoServeCoroutine == null)
             {
+                _autoServeCoroutine = StartCoroutine(AutoServeAfterDelay());
                 return;
             }
+
+            if (Keyboard.current == null) return;
 
             if (Keyboard.current[serveKey].wasPressedThisFrame)
             {
                 TryServePreparedDrink();
             }
+        }
+
+        private System.Collections.IEnumerator AutoServeAfterDelay()
+        {
+            yield return new WaitForSeconds(freshTimeAutoServeDelay);
+            _autoServeCoroutine = null;
+            TryServePreparedDrink();
         }
 
         private void HandleMinigameExitCompleted()

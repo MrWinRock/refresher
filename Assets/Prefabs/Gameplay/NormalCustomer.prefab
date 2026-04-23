@@ -290,7 +290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Refresh.HeatBar
   fillImage: {fileID: 4987962195653765080}
   maxHeat: 1
-  drainRate: 0.01
+  drainRate: 0.05
   startActive: 0
 --- !u!1 &2700191285238897247
 GameObject:
@@ -425,6 +425,8 @@ MonoBehaviour:
   satisfiedPunchDuration: 0.3
   leaveTiltZ: -14
   leaveTiltDuration: 0.2
+  feverReactionDisplayDuration: 2
+  feverReactionScale: 1.5
 --- !u!1 &3009304023876300811
 GameObject:
   m_ObjectHideFlags: 0

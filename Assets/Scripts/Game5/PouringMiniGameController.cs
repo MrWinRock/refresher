@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
@@ -48,8 +48,11 @@ namespace Game5
         [Header("Lifecycle")]
         [SerializeField] private bool autoBeginOnEnable = false;
 
+        [Header("FreshTime")]
+        [SerializeField] private float feverFillSpeedMultiplier = 1.5f;
+
         private Quaternion _initialShakerRotation;
-        private bool _hasStartedPouring;
+private bool _hasStartedPouring;
         private bool _overflowed;
         private bool _isFinished;
         private float _pourStartTime;
@@ -58,6 +61,7 @@ namespace Game5
         private bool _isMinigameActive;
         private float _currentY;
         private bool _isPourInputArmed;
+        private bool _feverMode;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -76,6 +80,8 @@ namespace Game5
         public bool IsFinished => _isFinished;
         public bool IsMinigameActive => _isMinigameActive;
         public event Action MinigameFinished;
+
+        public void SetFeverMode(bool active) => _feverMode = active;
 
         private void Awake()
         {
@@ -137,8 +143,15 @@ namespace Game5
             bool isPourKeyPressedThisFrame = Keyboard.current != null && Keyboard.current.downArrowKey.wasPressedThisFrame;
             bool isHoldingPourKey = Keyboard.current != null && Keyboard.current.downArrowKey.isPressed;
 
-            if (!_hasStartedPouring)
+            // In Fever Mode, we simulate a constant hold of the down arrow key
+            if (_feverMode)
             {
+                isHoldingPourKey = true;
+                if (!_hasStartedPouring) isPourKeyPressedThisFrame = true;
+            }
+
+            if (!_hasStartedPouring)
+{
                 if (isPourKeyPressedThisFrame)
                 {
                     _hasStartedPouring = true;
@@ -198,7 +211,8 @@ namespace Game5
 
         private bool RaiseWater()
         {
-            float nextY = Mathf.MoveTowards(_currentY, maxY, fillSpeed * Time.deltaTime);
+            float speed = _feverMode ? fillSpeed * feverFillSpeedMultiplier : fillSpeed;
+            float nextY = Mathf.MoveTowards(_currentY, maxY, speed * Time.deltaTime);
             SetWaterY(nextY);
             return Mathf.Approximately(nextY, maxY) || nextY >= maxY;
         }
@@ -272,6 +286,7 @@ namespace Game5
         public void BeginMinigame(DrinkData data)
         {
             ActivateAndBindDrink(data);
+            _pointManager?.ResetPoints();
             _isMinigameActive = true;
             _hasStartedPouring = false;
             _isPourInputArmed = false;
@@ -281,6 +296,8 @@ namespace Game5
             elapsedPourTime = 0f;
             finalPourTime = 0f;
             pointsEarned = 0f;
+            totalPoints = 0f;
+            normalizedPoints = 0f;
             boostPointsToAdd = 0f;
             lastResult = "-";
             SetWaterY(minY);
@@ -291,6 +308,7 @@ namespace Game5
 
         public void ResetMinigame()
         {
+            _pointManager?.ResetPoints();
             _isMinigameActive = false;
             _hasStartedPouring = false;
             _isPourInputArmed = false;
@@ -300,6 +318,8 @@ namespace Game5
             elapsedPourTime = 0f;
             finalPourTime = 0f;
             pointsEarned = 0f;
+            totalPoints = 0f;
+            normalizedPoints = 0f;
             boostPointsToAdd = 0f;
             lastResult = "-";
             SetWaterY(minY);
@@ -369,8 +389,13 @@ namespace Game5
             bool isOverflow = _overflowed || _currentY >= maxY;
             pointsEarned = 0f;
 
-            if (isOverflow)
+            if (_feverMode)
             {
+                result = "Perfect (FreshTime)";
+                pointsEarned = 1f;
+            }
+            else if (isOverflow)
+{
                 result = "Bad (Overflow)";
             }
             else if (earlyDelta <= perfectEarlyTolerance && lateDelta <= perfectLateTolerance)
