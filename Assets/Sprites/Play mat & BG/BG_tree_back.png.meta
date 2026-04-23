@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: f7f4d7087e0c678439ae3079137a7361
+guid: 31f1c13b97df7164181e5383376cc04d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4951094134696416316
-    second: Fullwater03_0
+      213: 4304460602879728470
+    second: BG_tree_back_0
+  - first:
+      213: 3965236993809896981
+    second: BG_tree_back_1
+  - first:
+      213: -4833477416145637838
+    second: BG_tree_back_2
+  - first:
+      213: -6045690622034397613
+    second: BG_tree_back_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fullwater03_0
+      name: BG_tree_back_0
       rect:
         serializedVersion: 2
-        x: 747
-        y: 764
-        width: 1324
-        height: 2358
-      alignment: 9
-      pivot: {x: 0.38, y: 0.5}
+        x: 380
+        y: 440
+        width: 355
+        height: 587
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4cb66e3dd1e2a4bb0800000000000000
-      internalID: -4951094134696416316
+      spriteID: 65b5f40cc148cbb30800000000000000
+      internalID: 4304460602879728470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG_tree_back_1
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 494
+        width: 260
+        height: 345
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 516d642890a570730800000000000000
+      internalID: 3965236993809896981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG_tree_back_2
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 490
+        width: 212
+        height: 394
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23e24cc16e90cecb0800000000000000
+      internalID: -4833477416145637838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG_tree_back_3
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 246
+        width: 467
+        height: 832
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 356bab32964691ca0800000000000000
+      internalID: -6045690622034397613
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 99b6292f25141214a8cd956322661bc8
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Fullwater03_0: -4951094134696416316
+      BG_tree_back_0: 4304460602879728470
+      BG_tree_back_1: 3965236993809896981
+      BG_tree_back_2: -4833477416145637838
+      BG_tree_back_3: -6045690622034397613
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: f7f4d7087e0c678439ae3079137a7361
+guid: 323ce4537d7a7cc42be12e15167e9e68
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4951094134696416316
-    second: Fullwater03_0
+      213: 1481117875259264756
+    second: Slot interface2_0
+  - first:
+      213: 6671726043737241831
+    second: Slot interface2_1
+  - first:
+      213: -3205690733382968223
+    second: Slot interface2_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +106,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fullwater03_0
+      name: Slot interface2_0
       rect:
         serializedVersion: 2
-        x: 747
-        y: 764
-        width: 1324
-        height: 2358
-      alignment: 9
-      pivot: {x: 0.38, y: 0.5}
+        x: 1567
+        y: 1828
+        width: 380
+        height: 381
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4cb66e3dd1e2a4bb0800000000000000
-      internalID: -4951094134696416316
+      spriteID: 4fe4f493cdcfd8410800000000000000
+      internalID: 1481117875259264756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slot interface2_1
+      rect:
+        serializedVersion: 2
+        x: 1208
+        y: 809
+        width: 1070
+        height: 990
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e83eab0d7bb69c50800000000000000
+      internalID: 6671726043737241831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slot interface2_2
+      rect:
+        serializedVersion: 2
+        x: 1567
+        y: 402
+        width: 380
+        height: 381
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16c52f033491383d0800000000000000
+      internalID: -3205690733382968223
       vertices: []
       indices: 
       edges: []
@@ -125,7 +175,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 99b6292f25141214a8cd956322661bc8
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Fullwater03_0: -4951094134696416316
+      Slot interface2_0: 1481117875259264756
+      Slot interface2_1: 6671726043737241831
+      Slot interface2_2: -3205690733382968223
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
