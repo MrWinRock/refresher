@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,17 +6,20 @@ public enum GameState { Idle, Loading, Playing, Result }
 
 public class GameManager : MonoBehaviour
 {
+    
     public static GameManager Instance { get; private set; }
 
     [Header("References")]
     [SerializeField] private FruitPoolManager   fruitPoolManager;
     [SerializeField] private BeltController     beltController;
+    [SerializeField] private ActiveZone         activeZone;
     [SerializeField] private TargetQueueManager targetQueueManager;
     [SerializeField] private BoostMode          boostMode;
     [SerializeField] private UIManager          uiManager;
     [SerializeField] private InputHandler       inputHandler;
 
     private PointManager pointManager;
+    private int currentSlotIndex = 0;   // เพิ่ม field นี้
 
     public GameState CurrentState { get; private set; } = GameState.Idle;
 
@@ -37,12 +41,11 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameLoop()
     {
         SetState(GameState.Loading);
-
         fruitPoolManager.InitializePool();
         targetQueueManager.GenerateQueue();
-
-        // สร้าง PointManager ใหม่ทุกรอบ ใช้จำนวน target เป็น max
         pointManager = new PointManager(targetQueueManager.Count);
+
+        currentSlotIndex = 0;           // reset ทุกรอบ
 
         uiManager.ShowTargetQueue(targetQueueManager.GetQueueSnapshot());
 
@@ -57,24 +60,29 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState != GameState.Playing) return;
 
-        FruitData pressed  = beltController.GetActiveFruit();
+        FruitData pressed  = activeZone.GetActiveFruit();
         FruitData expected = targetQueueManager.Peek();
+
+        Debug.Log($"[GameManager] pressed  = {(pressed  != null ? pressed.fruitId  : "NULL")}");
+        Debug.Log($"[GameManager] expected = {(expected != null ? expected.fruitId : "NULL")}");
+
+
+
         bool isMatch = pressed != null && expected != null
                        && pressed.fruitId == expected.fruitId;
 
-        // PointManager — เพิ่ม 1 ถ้าถูก, 0 ถ้าผิด
         pointManager.AddPoints(isMatch ? 1f : 0f);
-
-        // BoostMode — เพิ่มเฉพาะตอน hit
         if (isMatch) boostMode.AddBoostPoints(1f);
 
-        uiManager.ShowMatchResult(isMatch);
+        uiManager.RevealSlot(currentSlotIndex, isMatch);   // ← เปลี่ยนจาก ShowMatchResult
         targetQueueManager.Dequeue();
-        uiManager.ShowTargetQueue(targetQueueManager.GetQueueSnapshot());
+        currentSlotIndex++;
 
         if (targetQueueManager.IsEmpty())
             StartCoroutine(EndGame());
     }
+
+    public event Action<int, float, BoostMode, PointManager> OnGameEnd;
 
     private IEnumerator EndGame()
     {
@@ -83,10 +91,11 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        // ใช้ CalculatePoints() ตรงๆ ตามที่ PointManager มีให้
         float fever = pointManager.CalculatePoints();
         SetState(GameState.Result);
-        uiManager.ShowResult((int)pointManager.TotalPoints, fever);
+
+        // ส่งทุกอย่างออกไปให้ระบบภายนอกจัดการต่อ
+        OnGameEnd?.Invoke((int)pointManager.TotalPoints, fever, boostMode, pointManager);
     }
 
     private void SetState(GameState next)

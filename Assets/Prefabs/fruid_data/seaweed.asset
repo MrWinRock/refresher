@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   fruitId: seaweed
   fruitName: Seaweed
+  fruitType: 2
   sprite: {fileID: -4983379048037357487, guid: 427237bdf29a62c45b3861e72a0b5fd9, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   spawnWeight: 1

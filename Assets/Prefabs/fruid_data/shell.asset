@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   fruitId: shell
   fruitName: Shell
+  fruitType: 2
   sprite: {fileID: -7608026318298583230, guid: 7ea3ec3524c3d3a4c863b9b41df8430e, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   spawnWeight: 1

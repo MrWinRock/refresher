@@ -1,4 +1,3 @@
-// TargetQueueManager.cs
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,68 +7,66 @@ public class TargetQueueManager : MonoBehaviour
     [SerializeField] private int minCount = 2;
     [SerializeField] private int maxCount = 6;
 
+    [Header("Blacklist — ประเภทที่ห้ามเป็น target")]
+    [SerializeField] private FruitType[] blacklistedTypes;  // ลาก enum ใส่ใน Inspector
+
     [Header("References")]
     [SerializeField] private FruitPoolManager fruitPoolManager;
 
     private Queue<FruitData> targetQueue = new();
-
-
-
-    /// สุ่มผลไม้แล้วใส่ Queue — เรียกโดย GameManager ตอน Loading
 
     public void GenerateQueue(int count = -1)
     {
         targetQueue.Clear();
 
         int size = count > 0 ? count : Random.Range(minCount, maxCount + 1);
-        FruitData[] allFruits = fruitPoolManager.GetAllFruitData();
 
-        if (allFruits == null || allFruits.Length == 0)
+        // กรองเอาเฉพาะที่ไม่อยู่ใน blacklist
+        FruitData[] allFruits = fruitPoolManager.GetAllowedFruitData(); // ← เปลี่ยนตรงนี้
+        FruitData[] allowedFruits = GetAllowedFruits(allFruits);
+
+        if (allowedFruits.Length == 0)
         {
-            Debug.LogError("[TargetQueueManager] No FruitData available from pool");
+            Debug.LogError("[TargetQueueManager] ไม่มี FruitData ที่ allowed เลย — เช็ก blacklist");
             return;
         }
 
         for (int i = 0; i < size; i++)
-        {
-            FruitData picked = allFruits[Random.Range(0, allFruits.Length)];
-            targetQueue.Enqueue(picked);
-        }
+            targetQueue.Enqueue(allowedFruits[Random.Range(0, allowedFruits.Length)]);
 
-        Debug.Log($"[TargetQueueManager] Queue generated — {size} targets");
+        Debug.Log($"[Queue] Generated {size} targets จาก {allowedFruits.Length} ชนิดที่ allowed");
     }
-
-
-    /// ดูผลไม้ถัดไปโดยไม่ลบออก — ใช้เปรียบเทียบตอน Space กด
 
     public FruitData Peek()
     {
-        if (targetQueue.Count == 0)
-        {
-            Debug.LogWarning("[TargetQueueManager] Peek() called on empty queue");
-            return null;
-        }
+        if (targetQueue.Count == 0) return null;
         return targetQueue.Peek();
     }
 
-
-    /// ลบผลไม้แรกออกจาก Queue — เรียกหลัง GameManager ตรวจสอบ match แล้ว
-
     public void Dequeue()
     {
-        if (targetQueue.Count == 0)
-        {
-            Debug.LogWarning("[TargetQueueManager] Dequeue() called on empty queue");
-            return;
-        }
-        targetQueue.Dequeue();
+        if (targetQueue.Count > 0) targetQueue.Dequeue();
     }
 
-
-    /// ส่ง snapshot ของ Queue ปัจจุบัน — ใช้โดย UIManager แสดงเป้าหมายทั้งหมด
-
     public FruitData[] GetQueueSnapshot() => targetQueue.ToArray();
-
     public bool IsEmpty() => targetQueue.Count == 0;
-    public int Count     => targetQueue.Count;
+    public int  Count    => targetQueue.Count;
+
+    // ── Helper ───────────────────────────────────────────────────
+
+    private FruitData[] GetAllowedFruits(FruitData[] all)
+    {
+        var allowed = new List<FruitData>();
+        foreach (var data in all)
+            if (!IsBlacklisted(data.fruitType))
+                allowed.Add(data);
+        return allowed.ToArray();
+    }
+
+    private bool IsBlacklisted(FruitType type)
+    {
+        foreach (var t in blacklistedTypes)
+            if (t == type) return true;
+        return false;
+    }
 }

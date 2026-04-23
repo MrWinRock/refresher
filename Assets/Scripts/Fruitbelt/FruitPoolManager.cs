@@ -8,9 +8,13 @@ public class FruitPoolManager : MonoBehaviour
 
     [Header("Pool Settings")]
     [SerializeField] private GameObject fruitPrefab;
-    [SerializeField] private int poolSizePerFruit = 5;
+    [SerializeField] private int poolSizePerFruit = 10;
     [SerializeField] private Transform poolParent;
 
+    [Header("References")]
+    [SerializeField] private ActiveZone activeZone;
+    [Header("Belt Boost Settings")]
+[SerializeField] private float targetBoostMultiplier = 2f;
     private Dictionary<string, Queue<FruitObject>> pool = new();
 
     public void InitializePool()
@@ -28,7 +32,32 @@ public class FruitPoolManager : MonoBehaviour
             pool[data.fruitId] = queue;
         }
     }
+    public FruitObject SpawnWeightedWithBoost(Vector3 position, HashSet<string> targetIds)
+    {
+        float totalWeight = 0f;
+        foreach (var d in fruitDataList)
+        {
+            float w = d.spawnWeight;
+            if (targetIds != null && targetIds.Contains(d.fruitId))
+                w *= targetBoostMultiplier;  // 2x ของ spawnWeight เดิม
+            totalWeight += w;
+        }
 
+        float roll       = Random.Range(0f, totalWeight);
+        float cumulative = 0f;
+
+        foreach (var d in fruitDataList)
+        {
+            float w = d.spawnWeight;
+            if (targetIds != null && targetIds.Contains(d.fruitId))
+                w *= targetBoostMultiplier;
+
+            cumulative += w;
+            if (roll <= cumulative) return Spawn(d.fruitId, position);
+        }
+
+        return Spawn(fruitDataList[0].fruitId, position);
+    }
     public FruitObject Spawn(string fruitId, Vector3 position)
     {
         if (!pool.TryGetValue(fruitId, out var queue))
@@ -60,6 +89,9 @@ public class FruitPoolManager : MonoBehaviour
     public void ReturnToPool(FruitObject obj)
     {
         if (obj == null) return;
+
+        activeZone?.RemoveFruit(obj);
+
         obj.ResetObject();
         obj.gameObject.SetActive(false);
         obj.transform.SetParent(poolParent);
@@ -70,6 +102,9 @@ public class FruitPoolManager : MonoBehaviour
     }
 
     public FruitData[] GetAllFruitData() => fruitDataList;
+
+    // กรองแล้ว — ใช้โดย TargetQueueManager เท่านั้น
+    public FruitData[] GetAllowedFruitData() => System.Array.FindAll(fruitDataList, d => d.fruitType != FruitType.Trap);
 
     private FruitObject CreateInstance(FruitData data)
     {

@@ -1,126 +1,59 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Target Queue")]
-    [SerializeField] private Transform     targetSlotParent;
-    [SerializeField] private GameObject    targetSlotPrefab;   // prefab ที่มี Image + outline
-
-    [Header("Score & Fever")]
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private TextMeshProUGUI feverText;
-    [SerializeField] private Slider          feverSlider;
+    [Header("Target Queue — World Space")]
+    [SerializeField] private Transform  targetSlotParent;
+    [SerializeField] private GameObject targetSlotPrefab;
+    [SerializeField] private float      slotSpacing = 1.2f;
 
     [Header("Feedback")]
-    [SerializeField] private GameObject hitFeedback;
-    [SerializeField] private GameObject missFeedback;
+    [SerializeField] private SpriteRenderer hitFeedback;
+    [SerializeField] private SpriteRenderer missFeedback;
 
-    [Header("State UI")]
-    [SerializeField] private GameObject resultPanel;
-    [SerializeField] private TextMeshProUGUI resultScoreText;
-    [SerializeField] private TextMeshProUGUI resultFeverText;
-    [SerializeField] private TextMeshProUGUI stateLabel;
-
-    [Header("Boost / Fever")]
-    [SerializeField] private GameObject boostEffectOverlay;  // particle / glow effect
-
-
-    // ── Public API ───────────────────────────────────────────────
+    private List<TargetSlot> activeSlots = new();
 
     public void ShowTargetQueue(FruitData[] queue)
     {
-        // ล้าง slot เก่า
         foreach (Transform child in targetSlotParent)
             Destroy(child.gameObject);
+        activeSlots.Clear();
 
-        // สร้าง slot ใหม่
-        foreach (FruitData data in queue)
+        float totalWidth = (queue.Length - 1) * slotSpacing;
+        float startX     = -totalWidth / 2f;
+
+        for (int i = 0; i < queue.Length; i++)
         {
-            GameObject slot = Instantiate(targetSlotPrefab, targetSlotParent);
-            SpriteRenderer img = slot.GetComponentInChildren<SpriteRenderer>();
-            if (img != null) img.sprite = data.sprite;
+            Vector3 pos = targetSlotParent.position + new Vector3(startX + i * slotSpacing, 0f, 0f);
+            GameObject go   = Instantiate(targetSlotPrefab, pos, Quaternion.identity, targetSlotParent);
+            TargetSlot slot = go.GetComponent<TargetSlot>();
+            slot.Setup(queue[i]);
+            activeSlots.Add(slot);
         }
     }
 
-    public void ShowBoostEffect(bool isActive)
-{
-    boostEffectOverlay?.SetActive(isActive);
-}
- 
+    public void RevealSlot(int index, bool isHit)
+    {
+        if (index < 0 || index >= activeSlots.Count) return;
+        if (isHit) activeSlots[index].Reveal();
+        else       activeSlots[index].Miss();
+    }
+
     public void ShowMatchResult(bool isHit)
     {
-        if (isHit)
-        {
-            // ตรวจสอบว่ามี Reference หรือไม่ก่อนเรียกใช้งาน
-            if (hitFeedback != null) 
-            {
-                hitFeedback.SetActive(true);
-                Invoke(nameof(HideHitFeedback), 0.4f);
-            }
-        }
-        else
-        {
-            if (missFeedback != null)
-            {
-                missFeedback.SetActive(true);
-                Invoke(nameof(HideMissFeedback), 0.4f);
-            }
-        }
+        if (isHit  && hitFeedback  != null) StartCoroutine(FlashFeedback(hitFeedback));
+        if (!isHit && missFeedback != null) StartCoroutine(FlashFeedback(missFeedback));
     }
 
-    public void ShowResult(int point, float fever)
+    public void UpdateStateDisplay(GameState state) { }  // เหลือไว้ให้ GameManager เรียกได้ ไม่ทำอะไร
+
+    private IEnumerator FlashFeedback(SpriteRenderer sr)
     {
-        if (!ValidateResultReferences()) return;
-        
-        resultPanel.SetActive(true);
-        resultScoreText.text = $"Score: {point}";
-        resultFeverText.text = $"Fever: {(fever * 100f):0}%";
-        if (feverSlider != null) feverSlider.value = fever;
-    }
-
-    public void UpdateStateDisplay(GameState state)
-    {
-        if (!ValidateResultReferences()) return;
-        
-        stateLabel.text = state.ToString();
-        resultPanel.SetActive(state == GameState.Result);
-    }
-
-    public void SetInteractable(bool on) { /* ขยายได้ตามต้องการ */ }
-
-    // ── Private ──────────────────────────────────────────────────
-
-    private void HideHitFeedback()  => hitFeedback?.SetActive(false);
-    private void HideMissFeedback() => missFeedback?.SetActive(false);
-
-    private bool ValidateResultReferences()
-    {
-        if (resultPanel == null)
-        {
-            Debug.LogWarning("[UIManager] resultPanel is not assigned!");
-            return false;
-        }
-        
-        if (resultScoreText == null)
-        {
-            Debug.LogWarning("[UIManager] resultScoreText is not assigned!");
-            return false;
-        }
-        
-        if (resultFeverText == null)
-        {
-            Debug.LogWarning("[UIManager] resultFeverText is not assigned!");
-            return false;
-        }
-        
-        if (stateLabel == null)
-        {
-            Debug.LogWarning("[UIManager] stateLabel is not assigned!");
-            return false;
-        }
-        
-        return true;
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
+        yield return new WaitForSeconds(0.3f);
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 0f);
     }
 }
