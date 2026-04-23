@@ -138,6 +138,7 @@ namespace Refresh
             _hasLifecycleStarted = false;
             KillAllTweens();
             HidePromptBubble();
+            HideHeatBar();
 
             if (heatBar != null)
             {
@@ -215,6 +216,7 @@ namespace Refresh
             State = CustomerState.Entering;
             UpdateVisualState();
             _currentOrder = PickRandomDrink();
+            HideHeatBar();
 
             var targetWaitingPosition = GetWaitingPosition();
             var spawnPosition = targetWaitingPosition + Vector3.left * spawnOffsetFromWaiting;
@@ -229,14 +231,15 @@ namespace Refresh
             State = CustomerState.Waiting;
             UpdateVisualState();
             orderBubble?.ShowOrder(_currentOrder);
-textBubble?.ShowText(startMinigamePromptText);
-            heatBar?.Activate(this);
+            textBubble?.ShowText(startMinigamePromptText);
+            ShowAndActivateHeatBar();
         }
 
         private IEnumerator SatisfiedRoutine()
         {
             State = CustomerState.Satisfied;
             heatBar?.StopDrain();
+            HideHeatBar();
             HidePromptBubble();
             StopWalkBob();
             
@@ -283,6 +286,7 @@ textBubble?.ShowText(startMinigamePromptText);
             State = CustomerState.Leaving;
 
             heatBar?.StopDrain();
+            HideHeatBar();
             orderBubble?.Hide();
             HidePromptBubble();
 
@@ -480,6 +484,28 @@ textBubble?.ShowText(startMinigamePromptText);
         private void HidePromptBubble()
         {
             textBubble?.Hide();
+        }
+
+        private void ShowAndActivateHeatBar()
+        {
+            if (heatBar == null)
+            {
+                return;
+            }
+
+            heatBar.gameObject.SetActive(true);
+            heatBar.Activate(this);
+        }
+
+        private void HideHeatBar()
+        {
+            if (heatBar == null)
+            {
+                return;
+            }
+
+            heatBar.StopDrain();
+            heatBar.gameObject.SetActive(false);
         }
 
 
