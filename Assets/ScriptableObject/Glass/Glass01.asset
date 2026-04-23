@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Glass01
   m_EditorClassIdentifier: Assembly-CSharp::Refresh.DrinkData
   drinkIcon: {fileID: -7370006334348061030, guid: 7d185a0fea165c448b2237f8085b40c6, type: 3}
-  minigameVisualPrefab: {fileID: 1552496522943286738, guid: 93eab74b651eeea4baaf7c9731c9daa4, type: 3}
   servedGlassSprite: {fileID: 0}
+  particleStartColor: {r: 0.8392157, g: 0.1254902, b: 0.7137255, a: 1}
+  fillSpeed: 3
+  perfectTimeSeconds: 2.560057
