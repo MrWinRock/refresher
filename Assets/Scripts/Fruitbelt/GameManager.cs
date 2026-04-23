@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        float fever = pointManager.CalculatePoints();
+        float fever = pointManager.CalculateBoostPoint();
         SetState(GameState.Result);
 
         // ส่งทุกอย่างออกไปให้ระบบภายนอกจัดการต่อ
