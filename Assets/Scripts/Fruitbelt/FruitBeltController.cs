@@ -50,6 +50,7 @@ public class FruitBeltController : MonoBehaviour
         if (!_isRunning) return;
         MoveFruits();
         RecycleFruits();
+        SpawnNewFruits();
     }
 
     private void CalculateBounds()
@@ -80,8 +81,29 @@ public class FruitBeltController : MonoBehaviour
             {
                 poolManager.ReturnToPool(_beltFruits[i], activeZone);
                 _beltFruits.RemoveAt(i);
-                SpawnAt(_spawnX);
             }
+        }
+    }
+
+    private void SpawnNewFruits()
+    {
+        // หาตำแหน่ง X ของผลไม้ที่อยู่ขวาสุด
+        float rightmostX = -9999f;
+        foreach (var fruit in _beltFruits)
+        {
+            if (fruit.transform.position.x > rightmostX)
+                rightmostX = fruit.transform.position.x;
+        }
+
+        // ถ้าผลไม้ขวาสุดเคลื่อนที่ไปไกลพอแล้ว ให้ spawn ตัวใหม่ที่จุดเดิม (ขยับไปทางขวาตาม spacing)
+        // หรือถ้าไม่มีผลไม้เลย ให้เริ่ม spawn ที่จุดเริ่ม
+        if (_beltFruits.Count == 0)
+        {
+            SpawnAt(_spawnX);
+        }
+        else if (_spawnX - rightmostX >= slotSpacing)
+        {
+            SpawnAt(_spawnX);
         }
     }
 

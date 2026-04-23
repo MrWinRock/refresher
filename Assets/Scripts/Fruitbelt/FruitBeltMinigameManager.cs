@@ -32,11 +32,11 @@ public class FruitBeltMinigameManager : MonoBehaviour
     [SerializeField] private FruitBeltPoolManager poolManager;
 
     [Header("Recipe Settings")]
-    [SerializeField] private int minIngredients = 2;
-    [SerializeField] private int maxIngredients = 5;
+    [SerializeField] private int   minIngredients = 2;
+    [SerializeField] private int   maxIngredients = 5;
 
     [Header("Input")]
-    [SerializeField] private Key confirmKey = Key.Space;
+[SerializeField] private Key confirmKey = Key.Space;
 
     [Header("Auto Start")]
     [SerializeField] private bool autoStartOnEnable = false;
