@@ -285,6 +285,7 @@ namespace Game5
         {
             waterObject = null;
             waterFill = null;
+            var matchedEntry = false;
 
             if (drinkEntries == null || drinkEntries.Length == 0)
             {
@@ -305,8 +306,17 @@ namespace Game5
 
                 if (isMatch)
                 {
+                    matchedEntry = true;
                     waterFill = entry.drinkObject.GetComponentInChildren<WaterFillController>(true);
-                    waterObject = waterFill != null ? waterFill.transform : entry.drinkObject.transform;
+
+                    if (waterFill != null)
+                    {
+                        waterObject = waterFill.transform;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"PouringMiniGameController: Matched DrinkEntry '{entry.drinkObject.name}' for DrinkData '{data.name}', but no WaterFillController was found. The pour minigame water visual will not update.", this);
+                    }
                 }
             }
 
@@ -326,7 +336,10 @@ namespace Game5
 
             if (waterObject == null)
             {
-                Debug.LogWarning($"PouringMiniGameController: No DrinkEntry matched DrinkData '{data.name}'. Check DrinkEntries in the Inspector.", this);
+                if (!matchedEntry)
+                {
+                    Debug.LogWarning($"PouringMiniGameController: No DrinkEntry matched DrinkData '{data.name}'. Check DrinkEntries in the Inspector.", this);
+                }
             }
         }
 

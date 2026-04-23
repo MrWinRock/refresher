@@ -40,6 +40,8 @@ namespace Game5
         private bool _hasCachedShownPosition;
         private bool _isStartInputLocked;
         private Coroutine _afterMinigameCoroutine;
+        private int _waitingDrinkDataFrame = -1;
+        private DrinkData _waitingDrinkData;
 
         public event Action MinigameExitCompleted;
 
@@ -101,25 +103,31 @@ namespace Game5
                 return;
             }
 
-            if (!CanAcceptStartInput())
+            var waitingDrinkData = GetWaitingCustomerDrinkDataCached();
+            if (!CanAcceptStartInput(waitingDrinkData))
             {
                 return;
             }
 
             if (Keyboard.current[startKey].wasPressedThisFrame)
             {
-                StartMinigame();
+                StartMinigame(waitingDrinkData);
             }
         }
 
         public void StartMinigame()
+        {
+            StartMinigame(GetWaitingCustomerDrinkDataCached());
+        }
+
+        private void StartMinigame(DrinkData waitingDrinkData)
         {
             if (_isPlaying || _isTransitioning || pouringMinigameRoot == null)
             {
                 return;
             }
 
-            if (!CanAcceptStartInput())
+            if (!CanAcceptStartInput(waitingDrinkData))
             {
                 return;
             }
@@ -133,7 +141,7 @@ namespace Game5
             }
 
             pouringMinigameRoot.SetActive(true);
-            pouringMiniGameController?.BeginMinigame(FindWaitingCustomerDrinkData());
+            pouringMiniGameController?.BeginMinigame(waitingDrinkData);
 
             _isTransitioning = true;
             KillTransitionTween();
@@ -199,7 +207,7 @@ namespace Game5
             var customers = FindObjectsByType<CustomerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             for (var i = 0; i < customers.Length; i++)
             {
-                if (customers[i].State == CustomerController.CustomerState.Waiting)
+                if (customers[i].State == CustomerController.CustomerState.Waiting && customers[i].CurrentOrder)
                 {
                     return customers[i].CurrentOrder;
                 }
@@ -208,9 +216,22 @@ namespace Game5
             return null;
         }
 
-        private bool CanAcceptStartInput()
+        private DrinkData GetWaitingCustomerDrinkDataCached()
         {
-            return FindWaitingCustomerDrinkData() != null;
+            var currentFrame = Time.frameCount;
+            if (_waitingDrinkDataFrame == currentFrame)
+            {
+                return _waitingDrinkData;
+            }
+
+            _waitingDrinkData = FindWaitingCustomerDrinkData();
+            _waitingDrinkDataFrame = currentFrame;
+            return _waitingDrinkData;
+        }
+
+        private static bool CanAcceptStartInput(DrinkData waitingDrinkData)
+        {
+            return waitingDrinkData != null;
         }
 
         private void ResolveTextBubbleRootIfNeeded()
