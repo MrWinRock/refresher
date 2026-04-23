@@ -54,7 +54,6 @@ Shader "Custom/WaterFill"
             SAMPLER(sampler_MainTex);
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _MainTex_ST;
                 half4  _Color;
                 float  _FillAmount;
             CBUFFER_END
@@ -65,7 +64,7 @@ Shader "Custom/WaterFill"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
-                o.uv          = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv          = v.uv; // Removed TRANSFORM_TEX to avoid _MainTex_ST usage
                 o.color       = v.color * _Color;
                 return o;
             }

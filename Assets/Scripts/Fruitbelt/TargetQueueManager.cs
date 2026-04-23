@@ -5,7 +5,7 @@ public class TargetQueueManager : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private int minCount = 2;
-    [SerializeField] private int maxCount = 6;
+    [SerializeField] private int maxCount = 5;
 
     [Header("Blacklist — ประเภทที่ห้ามเป็น target")]
     [SerializeField] private FruitType[] blacklistedTypes;  // ลาก enum ใส่ใน Inspector

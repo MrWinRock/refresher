@@ -62,5 +62,8 @@ TagManager:
   - name: SceneTransition
     uniqueID: 1182449031
     locked: 0
+  - name: Target
+    uniqueID: 162734581
+    locked: 0
   m_RenderingLayers:
   - Default

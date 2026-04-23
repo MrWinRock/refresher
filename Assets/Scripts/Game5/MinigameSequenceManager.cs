@@ -11,14 +11,18 @@ namespace Game5
         [SerializeField] private ShakerMinigameController shakerController;
         [SerializeField] private PouringMinigameTransitionController pouringTransitionController;
         [SerializeField] private ServingController servingController;
+        [SerializeField] private FruitBeltMinigameManager fruitBeltManager;
         [SerializeField] private GameObject shakerVisualRoot;
-[SerializeField] private GameObject shakerUIRoot;
+        [SerializeField] private GameObject shakerUIRoot;
+        [SerializeField] private GameObject ingredientsBeltRoot;
         [SerializeField] private GameObject textBubbleRoot;
 
         [Header("Settings")]
         [SerializeField] private Key startKey = Key.Space;
+        [SerializeField] private float fruitBeltBoostMultiplier = 5.0f;
 
         [Header("FreshTime")]
+
         [SerializeField] private float freshTimeAutoStartDelay = 1.5f;
 
         private bool _isShaking;
@@ -45,6 +49,11 @@ namespace Game5
             {
                 shakerController.MinigameFinished += OnShakerFinished;
             }
+
+            if (fruitBeltManager != null)
+            {
+                fruitBeltManager.OnMinigameComplete += OnFruitBeltFinished;
+            }
         }
 
         private void OnDisable()
@@ -53,11 +62,17 @@ namespace Game5
             {
                 shakerController.MinigameFinished -= OnShakerFinished;
             }
+
+            if (fruitBeltManager != null)
+            {
+                fruitBeltManager.OnMinigameComplete -= OnFruitBeltFinished;
+            }
         }
 
         private void Update()
         {
             if (_isShaking) return;
+            if (fruitBeltManager != null && fruitBeltManager.IsPlaying) return;
             if (pouringTransitionController != null && pouringTransitionController.IsPlaying) return;
             if (servingController != null && servingController.IsWaitingForServe) return;
 
@@ -93,6 +108,36 @@ namespace Game5
             // Only start if a customer is waiting
             var drinkData = FindWaitingCustomerDrinkData();
             if (drinkData == null) return;
+
+            if (fruitBeltManager != null)
+            {
+                StartFruitBelt();
+            }
+            else
+            {
+                StartShaker();
+            }
+        }
+
+        private void StartFruitBelt()
+        {
+            var drinkData = FindWaitingCustomerDrinkData();
+
+            ResolveTextBubbleRootIfNeeded();
+            if (textBubbleRoot != null) textBubbleRoot.SetActive(false);
+            if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(true);
+
+            fruitBeltManager.StartMinigame(drinkData);
+        }
+
+        private void OnFruitBeltFinished(float score)
+        {
+            if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(false);
+
+            if (BoostMode.Instance != null)
+            {
+                BoostMode.Instance.AddBoostPoints(score * fruitBeltBoostMultiplier);
+            }
 
             StartShaker();
         }

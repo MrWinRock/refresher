@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (isListening && Input.GetKeyDown(KeyCode.Space))
+        if (isListening && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
             OnSpacePressed?.Invoke();
     }
 }

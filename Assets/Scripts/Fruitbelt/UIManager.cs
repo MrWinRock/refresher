@@ -1,51 +1,46 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Target Queue — World Space")]
-    [SerializeField] private Transform  targetSlotParent;
-    [SerializeField] private GameObject targetSlotPrefab;
-    [SerializeField] private float      slotSpacing = 1.2f;
+    [Header("Recipe Slots")]
+    [SerializeField] private TargetSlot[] ingredientSlots;
 
     [Header("Feedback")]
     [SerializeField] private SpriteRenderer hitFeedback;
     [SerializeField] private SpriteRenderer missFeedback;
-
-    private List<TargetSlot> activeSlots = new();
-
+    
     public void ShowTargetQueue(FruitData[] queue)
     {
-        foreach (Transform child in targetSlotParent)
-            Destroy(child.gameObject);
-        activeSlots.Clear();
-
-        float totalWidth = (queue.Length - 1) * slotSpacing;
-        float startX     = -totalWidth / 2f;
-
-        for (int i = 0; i < queue.Length; i++)
+        for (int i = 0; i < ingredientSlots.Length; i++)
         {
-            Vector3 pos = targetSlotParent.position + new Vector3(startX + i * slotSpacing, 0f, 0f);
-            GameObject go   = Instantiate(targetSlotPrefab, pos, Quaternion.identity, targetSlotParent);
-            TargetSlot slot = go.GetComponent<TargetSlot>();
-            slot.Setup(queue[i]);
-            activeSlots.Add(slot);
+            if (ingredientSlots[i] == null) continue;
+
+            if (i < queue.Length)
+            {
+                ingredientSlots[i].gameObject.SetActive(true);
+                ingredientSlots[i].Setup(queue[i]);
+            }
+            else
+            {
+                ingredientSlots[i].gameObject.SetActive(false);
+            }
         }
     }
 
     public void RevealSlot(int index, bool isHit, FruitData wrongFruit = null)
     {
-        if (index < 0 || index >= activeSlots.Count) return;
+        if (index < 0 || index >= ingredientSlots.Length) return;
+        if (ingredientSlots[index] == null) return;
+
         if (isHit)
-            activeSlots[index].Reveal();
+            ingredientSlots[index].Reveal();
         else
         {
             if (wrongFruit != null)
-                activeSlots[index].ShowWrongFruit(wrongFruit);
+                ingredientSlots[index].ShowWrongFruit(wrongFruit);
             else
-                activeSlots[index].Miss();
+                ingredientSlots[index].Miss();
         }
     }
 
@@ -55,7 +50,7 @@ public class UIManager : MonoBehaviour
         if (!isHit && missFeedback != null) StartCoroutine(FlashFeedback(missFeedback));
     }
 
-    public void UpdateStateDisplay(GameState state) { }  // เหลือไว้ให้ GameManager เรียกได้ ไม่ทำอะไร
+    public void UpdateStateDisplay(GameState state) { }
 
     private IEnumerator FlashFeedback(SpriteRenderer sr)
     {
