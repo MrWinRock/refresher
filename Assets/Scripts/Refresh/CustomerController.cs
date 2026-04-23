@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -48,6 +48,10 @@ namespace Refresh
         [SerializeField] private float leaveTiltZ = -14f;
         [SerializeField] private float leaveTiltDuration = 0.2f;
 
+        [Header("Fever Reaction")]
+        [SerializeField] private float feverReactionDisplayDuration = 2.0f;
+        [SerializeField] private float feverReactionScale = 1.5f;
+
         private Coroutine _stateRoutine;
         private DrinkData _currentOrder;
         private Tween _moveTween;
@@ -55,6 +59,8 @@ namespace Refresh
         private Tween _reactionTween;
         private bool _isInitialized;
         private bool _hasLifecycleStarted;
+        private CharacterDefinition _characterData;
+        private bool _isFever;
 
         public CustomerState State { get; private set; }
         public DrinkData CurrentOrder => _currentOrder;
@@ -71,12 +77,40 @@ namespace Refresh
             TryStartLifecycle();
         }
 
-        public void Initialize(Transform waiting, Transform exit)
+        public void Initialize(Transform waiting, Transform exit, CharacterDefinition characterData, bool isFever)
         {
             waitingPoint = waiting;
             exitPoint = exit;
+            _characterData = characterData;
+            _isFever = isFever;
             _isInitialized = true;
+
+            UpdateVisualState();
             TryStartLifecycle();
+        }
+
+        private void UpdateVisualState()
+        {
+            if (_characterData == null) return;
+
+            Sprite spriteToUse = null;
+            if (State == CustomerState.Satisfied || State == CustomerState.Leaving)
+            {
+                spriteToUse = _isFever ? _characterData.feverHappySprite : _characterData.happySprite;
+            }
+            else
+            {
+                spriteToUse = _isFever ? _characterData.feverNormalSprite : _characterData.normalSprite;
+            }
+
+            if (spriteToUse == null && _isFever) 
+            {
+                // Fallback to normal if fever sprite is missing
+                spriteToUse = (State == CustomerState.Satisfied || State == CustomerState.Leaving) 
+                    ? _characterData.happySprite : _characterData.normalSprite;
+            }
+
+            SetVisualSprite(spriteToUse);
         }
 
         public void SetVisualSprite(Sprite sprite)
@@ -179,6 +213,7 @@ namespace Refresh
         private IEnumerator CustomerLifecycleRoutine()
         {
             State = CustomerState.Entering;
+            UpdateVisualState();
             _currentOrder = PickRandomDrink();
 
             var targetWaitingPosition = GetWaitingPosition();
@@ -192,8 +227,9 @@ namespace Refresh
             StopWalkBob();
 
             State = CustomerState.Waiting;
+            UpdateVisualState();
             orderBubble?.ShowOrder(_currentOrder);
-            textBubble?.ShowText(startMinigamePromptText);
+textBubble?.ShowText(startMinigamePromptText);
             heatBar?.Activate(this);
         }
 
@@ -203,9 +239,35 @@ namespace Refresh
             heatBar?.StopDrain();
             HidePromptBubble();
             StopWalkBob();
-            yield return PlaySatisfiedTween();
+            
+            UpdateVisualState(); // Switch to happy sprite
+
+            if (_isFever && _characterData != null && _characterData.feverReactionActionSprite != null)
+            {
+                yield return ShowFeverActionReaction();
+            }
+            else
+            {
+                yield return PlaySatisfiedTween();
+            }
+
             yield return new WaitForSeconds(satisfiedDelay);
             yield return LeaveRoutine();
+        }
+
+        private IEnumerator ShowFeverActionReaction()
+        {
+            // Find or get a FeverActionUI controller to show the big sprite in center
+            var feverUI = FindFirstObjectByType<FeverActionUI>();
+            if (feverUI != null)
+            {
+                yield return feverUI.ShowReaction(_characterData.feverReactionActionSprite, feverReactionDisplayDuration);
+            }
+            else
+            {
+                // Fallback: just play normal satisfied
+                yield return PlaySatisfiedTween();
+            }
         }
 
         private IEnumerator LeaveRoutine()
