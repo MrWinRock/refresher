@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +8,6 @@ namespace Refresh
     {
         [SerializeField] private GameObject bubbleRoot;
         [SerializeField] private Image bubbleBackground;
-        [SerializeField] private TMP_Text textLabel;
         [SerializeField] private CanvasGroup bubbleCanvasGroup;
 
         [Header("DOTween")]
@@ -57,14 +55,6 @@ namespace Refresh
         {
             EnsureTextLabelExists();
 
-            if (textLabel == null)
-            {
-                return;
-            }
-
-            textLabel.text = string.IsNullOrWhiteSpace(content) ? "?" : content;
-            textLabel.enabled = true;
-
             if (bubbleBackground != null)
             {
                 bubbleBackground.enabled = true;
@@ -78,11 +68,6 @@ namespace Refresh
         public void Hide()
         {
             KillTweens();
-
-            if (textLabel != null)
-            {
-                textLabel.enabled = false;
-            }
 
             if (bubbleBackground != null)
             {
@@ -164,22 +149,11 @@ namespace Refresh
 
         private void EnsureTextLabelExists()
         {
-            if (textLabel != null)
-            {
-                return;
-            }
-
             if (bubbleRoot == null)
             {
                 bubbleRoot = gameObject;
             }
-
-            textLabel = bubbleRoot.GetComponentInChildren<TMP_Text>();
-            if (textLabel != null)
-            {
-                return;
-            }
-
+            
             var labelRoot = bubbleBackground != null
                 ? bubbleBackground.GetComponent<RectTransform>()
                 : bubbleRoot.GetComponent<RectTransform>();
@@ -197,14 +171,6 @@ namespace Refresh
             rect.anchorMax = new Vector2(1f, 1f);
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-
-            textLabel = textGo.AddComponent<TextMeshProUGUI>();
-            textLabel.alignment = TextAlignmentOptions.Center;
-            textLabel.enableAutoSizing = true;
-            textLabel.fontSizeMin = 14f;
-            textLabel.fontSizeMax = 32f;
-            textLabel.color = Color.black;
-            textLabel.raycastTarget = false;
         }
 
         private void CacheDefaultLocalPosition()
