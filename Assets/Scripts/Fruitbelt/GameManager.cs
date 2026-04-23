@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         pointManager.AddPoints(isMatch ? 1f : 0f);
         if (isMatch) boostMode.AddBoostPoints(1f);
 
-        uiManager.RevealSlot(currentSlotIndex, isMatch);   // ← เปลี่ยนจาก ShowMatchResult
+        uiManager.RevealSlot(currentSlotIndex, isMatch, isMatch ? null : pressed);
         targetQueueManager.Dequeue();
         currentSlotIndex++;
 

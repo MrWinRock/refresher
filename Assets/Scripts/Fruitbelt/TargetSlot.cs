@@ -86,4 +86,21 @@ public class TargetSlot : MonoBehaviour
             randomness: 0f
         ).OnComplete(() => transform.localPosition = originPosition);
     }
+
+    public void ShowWrongFruit(FruitData wrongFruitData)
+    {
+        if (wrongFruitData == null) return;
+        
+        transform.DOKill();
+        fruitRenderer.sprite = wrongFruitData.sprite;
+        fruitRenderer.color  = Color.red;
+        
+        // Shake animation
+        transform.DOShakePosition(
+            duration:   0.3f,
+            strength:   new Vector3(0.15f, 0f, 0f),
+            vibrato:    20,
+            randomness: 0f
+        ).OnComplete(() => transform.localPosition = originPosition);
+    }
 }

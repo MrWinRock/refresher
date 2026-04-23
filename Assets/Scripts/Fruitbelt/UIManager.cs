@@ -35,11 +35,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RevealSlot(int index, bool isHit)
+    public void RevealSlot(int index, bool isHit, FruitData wrongFruit = null)
     {
         if (index < 0 || index >= activeSlots.Count) return;
-        if (isHit) activeSlots[index].Reveal();
-        else       activeSlots[index].Miss();
+        if (isHit)
+            activeSlots[index].Reveal();
+        else
+        {
+            if (wrongFruit != null)
+                activeSlots[index].ShowWrongFruit(wrongFruit);
+            else
+                activeSlots[index].Miss();
+        }
     }
 
     public void ShowMatchResult(bool isHit)
