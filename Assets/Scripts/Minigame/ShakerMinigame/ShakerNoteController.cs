@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 #if DOTWEEN_ENABLED
@@ -12,7 +11,7 @@ namespace Minigame.ShakerMinigame
     public class ShakerNoteController : MonoBehaviour
     {
         [Header("Visual")]
-        [SerializeField] private TMP_Text arrowLabel;
+        [SerializeField] private Image arrowImage;
         [SerializeField] private Image approachCircle;
         [SerializeField] private float initialApproachScale = 2.5f;
         [SerializeField] private RectTransform baseCircle;
@@ -20,6 +19,12 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private float manualHitScale = 1f;
         [SerializeField] private float visualHitTimeOffsetSeconds;
         [SerializeField] private float latePhaseEndScale = 0.85f;
+
+        [Header("Arrow Sprites")]
+        [SerializeField] private Sprite upSprite;
+        [SerializeField] private Sprite downSprite;
+        [SerializeField] private Sprite leftSprite;
+        [SerializeField] private Sprite rightSprite;
 
         [Header("Approach Feel")]
 #if DOTWEEN_ENABLED
@@ -69,9 +74,10 @@ namespace Minigame.ShakerMinigame
             _rectTransform ??= transform as RectTransform;
             _initialLocalScale = transform.localScale;
 
-            if (arrowLabel != null)
+            if (arrowImage != null)
             {
-                arrowLabel.text = DirectionToGlyph(direction);
+                arrowImage.sprite = DirectionToSprite(direction);
+                arrowImage.enabled = arrowImage.sprite != null;
             }
 
             if (noteCanvasGroup == null)
@@ -277,15 +283,15 @@ namespace Minigame.ShakerMinigame
         }
 #endif
 
-        private static string DirectionToGlyph(ArrowDirection direction)
+        private Sprite DirectionToSprite(ArrowDirection direction)
         {
             return direction switch
             {
-                ArrowDirection.Up => "↑",
-                ArrowDirection.Down => "↓",
-                ArrowDirection.Left => "←",
-                ArrowDirection.Right => "→",
-                _ => "?"
+                ArrowDirection.Up => upSprite,
+                ArrowDirection.Down => downSprite,
+                ArrowDirection.Left => leftSprite,
+                ArrowDirection.Right => rightSprite,
+                _ => null
             };
         }
     }
