@@ -90,8 +90,24 @@ public class FruitBeltPoolManager : MonoBehaviour
             return null;
         }
 
-        var obj = queue.Count > 0 ? queue.Dequeue() : CreateInstance(data);
-        obj.Initialize(data);
+        FruitBeltObject obj = null;
+        // Clean up any destroyed objects that might have lingered in the queue
+        while (queue.Count > 0)
+        {
+            obj = queue.Dequeue();
+            if (obj != null) break; 
+        }
+
+        if (obj == null) 
+        {
+            obj = CreateInstance(data);
+        }
+        else
+        {
+            // Only initialize if we reused from pool
+            obj.Initialize(data);
+        }
+
         obj.transform.position = position;
         obj.gameObject.SetActive(true);
         return obj;
@@ -99,10 +115,23 @@ public class FruitBeltPoolManager : MonoBehaviour
 
     private FruitBeltObject CreateInstance(FruitData data)
     {
+        if (fruitPrefab == null)
+        {
+            Debug.LogError("[FruitBeltPool] fruitPrefab is not assigned!", this);
+            return null;
+        }
+
         var go  = Instantiate(fruitPrefab, poolParent);
         go.SetActive(false);
         var obj = go.GetComponent<FruitBeltObject>();
-        obj.Initialize(data);
+        if (obj != null)
+        {
+            obj.Initialize(data);
+        }
+        else
+        {
+            Debug.LogError("[FruitBeltPool] fruitPrefab does not have FruitBeltObject component!", go);
+        }
         return obj;
     }
 }

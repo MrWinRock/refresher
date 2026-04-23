@@ -1940,7 +1940,13 @@ MonoBehaviour:
   shakerVisualRoot: {fileID: 193661742}
   shakerUIRoot: {fileID: 266680707}
   ingredientsBeltRoot: {fileID: 1030190011}
+  orderRoot: {fileID: 111532187}
   textBubbleRoot: {fileID: 0}
+  animDuration: 0.5
+  orderHiddenOffset: {x: 0, y: -10, z: 0}
+  beltHiddenOffset: {x: 15, y: 0, z: 0}
+  animEaseIn: 27
+  animEaseOut: 26
   startKey: 1
   fruitBeltBoostMultiplier: 1
   freshTimeAutoStartDelay: 0.5
@@ -2203,7 +2209,7 @@ MonoBehaviour:
   poolManager: {fileID: 971825717}
   activeZone: {fileID: 1969952507}
   gameCamera: {fileID: 0}
-  beltSpeed: 4
+  beltSpeed: 6
   visibleCount: 7
   slotSpacing: 2
   beltZ: 0

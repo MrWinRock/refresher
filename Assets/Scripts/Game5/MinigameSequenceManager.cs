@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Minigame.ShakerMinigame;
 using Refresh;
+using DG.Tweening;
 
 namespace Game5
 {
@@ -15,10 +16,18 @@ namespace Game5
         [SerializeField] private GameObject shakerVisualRoot;
         [SerializeField] private GameObject shakerUIRoot;
         [SerializeField] private GameObject ingredientsBeltRoot;
+        [SerializeField] private GameObject orderRoot; 
         [SerializeField] private GameObject textBubbleRoot;
 
+        [Header("Animation Settings")]
+        [SerializeField] private float animDuration = 0.5f;
+        [SerializeField] private Vector3 orderHiddenOffset = new Vector3(0, -10f, 0); 
+        [SerializeField] private Vector3 beltHiddenOffset = new Vector3(15f, 0, 0);   
+        [SerializeField] private Ease animEaseIn = Ease.OutBack;
+        [SerializeField] private Ease animEaseOut = Ease.InBack;
+
         [Header("Settings")]
-        [SerializeField] private Key startKey = Key.Space;
+[SerializeField] private Key startKey = Key.Space;
         [SerializeField] private float fruitBeltBoostMultiplier = 5.0f;
 
         [Header("FreshTime")]
@@ -29,6 +38,9 @@ namespace Game5
         private bool _freshTimeActive;
         private float _autoStartTimer;
         private CustomerController _activeCustomer;
+
+        private Vector3 _orderHomePos;
+        private Vector3 _beltHomePos;
 
         public void SetFreshTimeActive(bool active)
         {
@@ -47,6 +59,9 @@ namespace Game5
             {
                 pouringTransitionController.SetStartInputLocked(true);
             }
+
+            if (orderRoot != null) _orderHomePos = orderRoot.transform.localPosition;
+            if (ingredientsBeltRoot != null) _beltHomePos = ingredientsBeltRoot.transform.localPosition;
         }
 
         private void OnEnable()
@@ -163,7 +178,7 @@ namespace Game5
             if (fruitBeltManager != null && fruitBeltManager.IsPlaying)
             {
                 fruitBeltManager.StopMinigame();
-                if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(false);
+                AnimateUIOut();
             }
 
             if (_isShaking)
@@ -187,7 +202,8 @@ namespace Game5
         {
             ResolveTextBubbleRootIfNeeded();
             if (textBubbleRoot != null) textBubbleRoot.SetActive(false);
-            if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(true);
+            
+            AnimateUIIn();
 
             if (fruitBeltManager != null)
             {
@@ -196,9 +212,53 @@ namespace Game5
             }
         }
 
+        private void AnimateUIIn()
+        {
+            if (orderRoot != null)
+            {
+                orderRoot.SetActive(true);
+                orderRoot.transform.DOKill();
+                orderRoot.transform.localPosition = _orderHomePos + orderHiddenOffset;
+                orderRoot.transform.DOLocalMove(_orderHomePos, animDuration).SetEase(animEaseIn);
+            }
+
+            if (ingredientsBeltRoot != null)
+            {
+                ingredientsBeltRoot.SetActive(true);
+                ingredientsBeltRoot.transform.DOKill();
+                ingredientsBeltRoot.transform.localPosition = _beltHomePos + beltHiddenOffset;
+                ingredientsBeltRoot.transform.DOLocalMove(_beltHomePos, animDuration).SetEase(animEaseIn);
+            }
+        }
+
+        private void AnimateUIOut()
+        {
+            if (orderRoot != null)
+            {
+                orderRoot.transform.DOKill();
+                orderRoot.transform.DOLocalMove(_orderHomePos + orderHiddenOffset, animDuration)
+                    .SetEase(animEaseOut)
+                    .OnComplete(() => {
+                        orderRoot.SetActive(false);
+                        orderRoot.transform.localPosition = _orderHomePos;
+                    });
+            }
+
+            if (ingredientsBeltRoot != null)
+            {
+                ingredientsBeltRoot.transform.DOKill();
+                ingredientsBeltRoot.transform.DOLocalMove(_beltHomePos + beltHiddenOffset, animDuration)
+                    .SetEase(animEaseOut)
+                    .OnComplete(() => {
+                        ingredientsBeltRoot.SetActive(false);
+                        ingredientsBeltRoot.transform.localPosition = _beltHomePos;
+                    });
+            }
+        }
+
         private void OnFruitBeltFinished(float score)
         {
-            if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(false);
+            AnimateUIOut();
 
             // If customer left during belt, don't start shaker
             if (_activeCustomer == null) return;

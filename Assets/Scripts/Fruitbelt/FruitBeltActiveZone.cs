@@ -41,9 +41,11 @@ public class FruitBeltActiveZone : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         var fruit = other.GetComponent<FruitBeltObject>();
-        if (fruit != null)
+        if (fruit != null && fruit.gameObject.activeInHierarchy)
         {
-            Debug.Log($"[FruitBelt] Fruit ENTER zone: {fruit.Data?.fruitId ?? "unknown"}");
+            string id = fruit.Data != null ? fruit.Data.fruitId : "unknown";
+            Debug.Log($"[FruitBelt] Fruit ENTER zone: {id}");
+            
             if (!_fruitsInZone.Contains(fruit))
                 _fruitsInZone.Add(fruit);
         }
@@ -54,7 +56,13 @@ public class FruitBeltActiveZone : MonoBehaviour
         var fruit = other.GetComponent<FruitBeltObject>();
         if (fruit != null)
         {
-            Debug.Log($"[FruitBelt] Fruit EXIT zone: {fruit.Data?.fruitId ?? "unknown"}");
+            // ป้องกันการเข้าถึง Data ถ้า object กำลังถูกทำลาย หรือโดน Reset ไปแล้ว
+            string id = "unknown";
+            try {
+                if (fruit != null && fruit.Data != null) id = fruit.Data.fruitId;
+            } catch { }
+
+            Debug.Log($"[FruitBelt] Fruit EXIT zone: {id}");
             _fruitsInZone.Remove(fruit);
         }
     }
