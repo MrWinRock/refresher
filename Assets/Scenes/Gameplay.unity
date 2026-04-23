@@ -280,7 +280,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.50000006, w: 0.8660254}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.16, y: 1.16, z: 1.16}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 687433631}
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Minigame.ShakerMinigame.BartenderShakeAnimator
   bartenderTransform: {fileID: 193661743}
   duration: 0.5
-  positionStrength: 25
+  positionStrength: 30
   rotationStrength: 10
   shakeSteps: 2
   settleDuration: 1
@@ -1495,7 +1495,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2369877943548908871, guid: 9e4da382bdb54704ab17d19edc7b2923, type: 3}
+  m_Sprite: {fileID: 2152139907816484301, guid: e158dc12d2d85fe4483be82f06191caa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2784,7 +2784,7 @@ Transform:
   m_GameObject: {fileID: 1698244862}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.72, z: 0}
+  m_LocalPosition: {x: 0.53, y: 1.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3305,8 +3305,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.76604444, w: 0.64278764}
   m_LocalPosition: {x: 2.29, y: 2.66, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8769191899641949295}
   m_Father: {fileID: 149506393}
@@ -3426,7 +3426,7 @@ SpriteRenderer:
   m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2059033291768421334, guid: 505da98e61bb2dd44bdfb42cfc7673ba, type: 3}
+  m_Sprite: {fileID: 7890475704071387188, guid: f2936ad8a95c6394eb549cf30cbe86a0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8553,7 +8553,7 @@ Transform:
   m_GameObject: {fileID: 7265462285654910980}
   serializedVersion: 2
   m_LocalRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: -0.01, y: 1.87, z: 0}
+  m_LocalPosition: {x: 0.33, y: 1.87, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
