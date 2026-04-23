@@ -2033,7 +2033,7 @@ MonoBehaviour:
   ingredientsBeltRoot: {fileID: 1030190011}
   textBubbleRoot: {fileID: 0}
   startKey: 1
-  fruitBeltBoostMultiplier: 5
+  fruitBeltBoostMultiplier: 1
   freshTimeAutoStartDelay: 0.5
 --- !u!1 &918422544
 GameObject:
@@ -2833,7 +2833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce201bea621bc28409703639fe70ca48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoostMode
-  threshold: 5
+  threshold: 10
   boostDuration: 30
   postBoostCooldown: 1.5
 --- !u!4 &1087544590
@@ -4268,7 +4268,6 @@ GameObject:
   - component: {fileID: 1854856727}
   - component: {fileID: 1854856728}
   - component: {fileID: 1854856729}
-  - component: {fileID: 1854856730}
   m_Layer: 0
   m_Name: Ingredients01
   m_TagString: Untagged
@@ -4286,7 +4285,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -6.07, y: -0.013999997, z: 0}
-  m_LocalScale: {x: 0.23325628, y: 0.23325628, z: 0.23325628}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1915767594}
@@ -4340,7 +4339,7 @@ SpriteRenderer:
   m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1435901459259225544, guid: 66e4fabae71371f42a2640cdefb3be44, type: 3}
+  m_Sprite: {fileID: 8532703672136922592, guid: 00392205d2ad7114596f8e484bc4cf9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4367,52 +4366,6 @@ MonoBehaviour:
   collectPunchDuration: 0.35
   missShakeDuration: 0.3
   missShakeStrength: 0.15
---- !u!61 &1854856730
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854856726}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 14.331534, y: 13.28}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 14.331534, y: 13.28}
-  m_EdgeRadius: 0
 --- !u!1 &1880407087
 GameObject:
   m_ObjectHideFlags: 0
@@ -4566,9 +4519,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907839047}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.07, y: -0.033695698, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.05, y: -0.19, z: 0}
+  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1880407088}
@@ -5971,7 +5924,7 @@ ParticleSystem:
     radiusThickness: 0
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
-    m_Rotation: {x: 0, y: 0, z: 0}
+    m_Rotation: {x: 90, y: 0, z: 0}
     m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
@@ -9089,7 +9042,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 1.2
     collidesWith:
       serializedVersion: 2
       m_Bits: 64
@@ -10267,6 +10220,7 @@ GameObject:
   - component: {fileID: 8769191899641949295}
   - component: {fileID: 4101706695113579743}
   - component: {fileID: 2333288330417639527}
+  - component: {fileID: 8769191899641949296}
   m_Layer: 4
   m_Name: Particle System
   m_TagString: Untagged
@@ -10363,13 +10317,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7265462285654910980}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: 0.33, y: 1.87, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.76604444, w: 0.64278764}
+  m_LocalPosition: {x: 0.47, y: 2.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1181880068332520928}
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 90}
+--- !u!114 &8769191899641949296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7265462285654910980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43f12eac0e3a91499422f894f8d6c82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game5.KeepWorldRotation
+  worldRotation: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

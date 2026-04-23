@@ -65,8 +65,10 @@ namespace Refresh
         public CustomerState State { get; private set; }
         public DrinkData CurrentOrder => _currentOrder;
 
+        public event System.Action<CustomerController> OnCustomerLeft;
+
         private void Start()
-        {
+{
             if (visualRoot == null)
             {
                 visualRoot = transform;
@@ -200,6 +202,8 @@ namespace Refresh
             {
                 return;
             }
+
+            OnCustomerLeft?.Invoke(this);
 
             KillAllTweens();
 

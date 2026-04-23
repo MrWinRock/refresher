@@ -28,11 +28,17 @@ namespace Game5
         private bool _isShaking;
         private bool _freshTimeActive;
         private float _autoStartTimer;
+        private CustomerController _activeCustomer;
 
         public void SetFreshTimeActive(bool active)
         {
             _freshTimeActive = active;
             _autoStartTimer = 0f; // Reset timer when state changes
+
+            if (fruitBeltManager != null)
+            {
+                fruitBeltManager.SetFreshTimeMode(active);
+            }
         }
 
         private void Awake()
@@ -54,6 +60,11 @@ namespace Game5
             {
                 fruitBeltManager.OnMinigameComplete += OnFruitBeltFinished;
             }
+
+            if (pouringTransitionController != null)
+            {
+                pouringTransitionController.MinigameExitCompleted += OnPouringExitCompleted;
+            }
         }
 
         private void OnDisable()
@@ -66,6 +77,17 @@ namespace Game5
             if (fruitBeltManager != null)
             {
                 fruitBeltManager.OnMinigameComplete -= OnFruitBeltFinished;
+            }
+
+            if (pouringTransitionController != null)
+            {
+                pouringTransitionController.MinigameExitCompleted -= OnPouringExitCompleted;
+            }
+
+            if (_activeCustomer != null)
+            {
+                _activeCustomer.OnCustomerLeft -= HandleActiveCustomerLeft;
+                _activeCustomer = null;
             }
         }
 
@@ -106,12 +128,17 @@ namespace Game5
         private void TryStartSequence()
         {
             // Only start if a customer is waiting
-            var drinkData = FindWaitingCustomerDrinkData();
-            if (drinkData == null) return;
+            _activeCustomer = FindWaitingCustomer();
+            if (_activeCustomer == null) return;
+
+            var drinkData = _activeCustomer.CurrentOrder;
+
+            // Subscribe to customer leaving (impatience)
+            _activeCustomer.OnCustomerLeft += HandleActiveCustomerLeft;
 
             if (fruitBeltManager != null)
             {
-                StartFruitBelt();
+                StartFruitBelt(drinkData);
             }
             else
             {
@@ -119,20 +146,62 @@ namespace Game5
             }
         }
 
-        private void StartFruitBelt()
+        private void HandleActiveCustomerLeft(CustomerController customer)
         {
-            var drinkData = FindWaitingCustomerDrinkData();
+            if (customer != _activeCustomer) return;
 
+            // Unsubscribe immediately
+            _activeCustomer.OnCustomerLeft -= HandleActiveCustomerLeft;
+
+            Debug.Log($"[SequenceManager] Active customer left! Force stopping minigame.");
+            ForceStopAllMinigames();
+            _activeCustomer = null;
+        }
+
+        private void ForceStopAllMinigames()
+        {
+            if (fruitBeltManager != null && fruitBeltManager.IsPlaying)
+            {
+                fruitBeltManager.StopMinigame();
+                if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(false);
+            }
+
+            if (_isShaking)
+            {
+                _isShaking = false;
+                shakerController?.EndMinigame();
+                if (shakerVisualRoot != null) shakerVisualRoot.SetActive(false);
+                if (shakerUIRoot != null) shakerUIRoot.SetActive(false);
+            }
+
+            if (pouringTransitionController != null && pouringTransitionController.IsPlaying)
+            {
+                pouringTransitionController.EndMinigame();
+            }
+
+            ResolveTextBubbleRootIfNeeded();
+            if (textBubbleRoot != null) textBubbleRoot.SetActive(true);
+        }
+
+        private void StartFruitBelt(DrinkData drinkData)
+        {
             ResolveTextBubbleRootIfNeeded();
             if (textBubbleRoot != null) textBubbleRoot.SetActive(false);
             if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(true);
 
-            fruitBeltManager.StartMinigame(drinkData);
+            if (fruitBeltManager != null)
+            {
+                fruitBeltManager.SetFreshTimeMode(_freshTimeActive);
+                fruitBeltManager.StartMinigame(drinkData);
+            }
         }
 
         private void OnFruitBeltFinished(float score)
         {
             if (ingredientsBeltRoot != null) ingredientsBeltRoot.SetActive(false);
+
+            // If customer left during belt, don't start shaker
+            if (_activeCustomer == null) return;
 
             if (BoostMode.Instance != null)
             {
@@ -177,6 +246,9 @@ namespace Game5
             if (shakerVisualRoot != null) shakerVisualRoot.SetActive(false);
             if (shakerUIRoot != null) shakerUIRoot.SetActive(false);
             
+            // If customer left during shaker, don't start pouring
+            if (_activeCustomer == null) return;
+
             // Now start the pouring minigame
             if (pouringTransitionController != null)
             {
@@ -185,17 +257,33 @@ namespace Game5
             }
         }
 
-        private DrinkData FindWaitingCustomerDrinkData()
+        private void OnPouringExitCompleted()
+        {
+            // The whole sequence for this customer is finished normally
+            if (_activeCustomer != null)
+            {
+                _activeCustomer.OnCustomerLeft -= HandleActiveCustomerLeft;
+                _activeCustomer = null;
+            }
+        }
+
+        private CustomerController FindWaitingCustomer()
         {
             var customers = FindObjectsByType<CustomerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             for (var i = 0; i < customers.Length; i++)
             {
                 if (customers[i].State == CustomerController.CustomerState.Waiting)
                 {
-                    return customers[i].CurrentOrder;
+                    return customers[i];
                 }
             }
             return null;
         }
-    }
-}
+
+        private DrinkData FindWaitingCustomerDrinkData()
+        {
+            var customer = FindWaitingCustomer();
+            return customer != null ? customer.CurrentOrder : null;
+        }
+        }
+        }

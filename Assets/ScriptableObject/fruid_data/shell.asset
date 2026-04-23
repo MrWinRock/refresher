@@ -17,4 +17,7 @@ MonoBehaviour:
   fruitType: 2
   sprite: {fileID: -7608026318298583230, guid: 7ea3ec3524c3d3a4c863b9b41df8430e, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  recipeScale: {x: 0.14, y: 0.14, z: 0.14}
+  beltScale: {x: 1.2, y: 1.2, z: 1.2}
+  beltRotation: {x: 0, y: 0, z: 0}
   spawnWeight: 1

@@ -21,6 +21,11 @@ public class FruitBeltObject : MonoBehaviour
     public void Initialize(FruitData data)
     {
         Data = data;
+        
+        // Apply Scale and Rotation for Belt
+        transform.localScale = data.beltScale;
+        transform.localRotation = Quaternion.Euler(data.beltRotation);
+
         if (spriteRenderer == null) return;
         spriteRenderer.sprite = data.sprite;
         spriteRenderer.color  = data.tintColor;

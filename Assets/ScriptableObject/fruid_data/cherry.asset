@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   fruitId: cherry
   fruitName: Cherry
+  fruitType: 0
   sprite: {fileID: -1435901459259225544, guid: a953e71501bcf1249b969d99eb2d5c16, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  recipeScale: {x: 0.2332563, y: 0.2332563, z: 0.2332563}
+  beltScale: {x: 1.2, y: 1.2, z: 1.2}
+  beltRotation: {x: 0, y: 0, z: 0}
   spawnWeight: 1

@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   fruitId: pineapple
   fruitName: Pineapple
+  fruitType: 0
   sprite: {fileID: -724105580326358498, guid: 5145220f3d545814281edc0a56e6b6bc, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  recipeScale: {x: 0.11, y: 0.11, z: 0.11}
+  beltScale: {x: 1.2, y: 1.2, z: 1.2}
+  beltRotation: {x: 0, y: 0, z: 90}
   spawnWeight: 1

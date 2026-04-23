@@ -20,6 +20,11 @@ public class FruitData : ScriptableObject
     public Sprite sprite;
     public Color  tintColor = Color.white;
 
+    [Header("Scaling & Rotation")]
+    public Vector3 recipeScale = Vector3.one;
+    public Vector3 beltScale = Vector3.one;
+    public Vector3 beltRotation = Vector3.zero;
+
     [Header("Belt Settings")]
     [Range(0f, 1f)]
     public float spawnWeight = 1f;

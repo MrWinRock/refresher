@@ -41,15 +41,19 @@ public class FruitBeltMinigameManager : MonoBehaviour
     [Header("Auto Start")]
     [SerializeField] private bool autoStartOnEnable = false;
 
-    // คะแนน normalized 0-1 เมื่อจบ
+    // จำนวนส่วนผสมที่เก็บถูกต้อง (Raw Score) ตามที่ User ต้องการ
     public event Action<float> OnMinigameComplete;
     public bool IsPlaying => _isPlaying;
 
     private FruitData[] _recipe;
     private int         _currentIndex;
+    private int         _correctHits;
     private bool        _isPlaying;
     private bool        _acceptingInput;  // true = พร้อมรับ Space
     private int         _inputReadyFrame; // frame ที่จะเริ่มรับ input
+    private bool        _isFreshTimeMode;
+
+    public void SetFreshTimeMode(bool active) => _isFreshTimeMode = active;
 
     // ── Unity ─────────────────────────────────────────────────────
 
@@ -82,7 +86,7 @@ public class FruitBeltMinigameManager : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     private void OnValidate()
     {
         if (poolManager    == null) Debug.LogWarning("[FruitBelt] PoolManager ยังไม่ได้ assign",    this);
@@ -91,7 +95,7 @@ public class FruitBeltMinigameManager : MonoBehaviour
         if (ingredientSlots == null || ingredientSlots.Length == 0)
             Debug.LogWarning("[FruitBelt] IngredientSlots ว่างอยู่", this);
     }
-#endif
+    #endif
 
     // ── Public API ────────────────────────────────────────────────
 
@@ -117,6 +121,7 @@ public class FruitBeltMinigameManager : MonoBehaviour
         _isPlaying      = true;
         _acceptingInput = false;
         _currentIndex   = 0;
+        _correctHits    = 0;
 
         // ── Guard: ตรวจ reference ที่จำเป็นทั้งหมดก่อนเริ่ม ──────────
         if (poolManager == null)
@@ -188,9 +193,9 @@ public class FruitBeltMinigameManager : MonoBehaviour
         beltController.StopBelt();
         _isPlaying = false;
 
-        float score = (float)_currentIndex / _recipe.Length;
-        OnMinigameComplete?.Invoke(score);
-    }
+        // ส่งคะแนนเป็นจำนวนที่ถูก (Raw Score) เพื่อให้สอดคล้องกับ "สุ่มคะแนนรวมตามจำนวนส่วนผสม"
+        OnMinigameComplete?.Invoke((float)_correctHits);
+        }
 
     private void HandleConfirmInput()
     {
@@ -210,17 +215,25 @@ public class FruitBeltMinigameManager : MonoBehaviour
         var target = _recipe[_currentIndex];
         Debug.Log($"[FruitBelt] Pressed: {fruit.Data.fruitId}, Expected: {target.fruitId}");
 
-        if (fruit.Data.fruitId == target.fruitId)
+        bool isCorrect = _isFreshTimeMode || (fruit.Data.fruitId == target.fruitId);
+
+        if (isCorrect)
         {
-            Debug.Log("[FruitBelt] MATCH! Collecting...");
+            Debug.Log("[FruitBelt] MATCH! (or FreshTime) Collecting...");
+            _correctHits++;
             ingredientSlots[_currentIndex].Collect();
-            _currentIndex++;
         }
         else
         {
             Debug.Log("[FruitBelt] MISMATCH!");
             ingredientSlots[_currentIndex].Miss();
         }
+
+        // เคลียร์ fruit ออกจากสายพาน
+        poolManager.ReturnToPool(fruit, activeZone);
+
+        // เลื่อนไปยังส่วนผสมถัดไปเสมอ ไม่ว่าจะถูกหรือผิด
+        _currentIndex++;
     }
 
     private FruitData[] GenerateRecipe()
@@ -228,11 +241,22 @@ public class FruitBeltMinigameManager : MonoBehaviour
         var all = poolManager.AllFruits;
         if (all == null || all.Length == 0) return Array.Empty<FruitData>();
 
+        // Filter out blacklisted items: sea weed, shell, shrimp, Squid
+        var filtered = new List<FruitData>();
+        foreach (var f in all)
+        {
+            if (f == null) continue;
+            if (IsBlacklisted(f)) continue;
+            filtered.Add(f);
+        }
+
+        if (filtered.Count == 0) return Array.Empty<FruitData>();
+
         int maxSlots = ingredientSlots != null ? ingredientSlots.Length : maxIngredients;
         int count    = Mathf.Clamp(UnityEngine.Random.Range(minIngredients, maxIngredients + 1), minIngredients, maxSlots);
 
         // Fisher-Yates shuffle แล้วเอา count ตัวแรก (ซ้ำได้ถ้า all < count)
-        var pool     = new List<FruitData>(all);
+        var pool     = new List<FruitData>(filtered);
         var result   = new FruitData[count];
 
         for (int i = 0; i < count; i++)
@@ -243,7 +267,21 @@ public class FruitBeltMinigameManager : MonoBehaviour
         }
 
         return result;
-        }
+    }
+
+    private bool IsBlacklisted(FruitData data)
+    {
+        if (data == null) return true;
+        string id = (data.fruitId ?? "").ToLower();
+        string name = (data.fruitName ?? "").ToLower();
+
+        // ตรวจสอบทั้ง ID และ Name ว่ามีคำต้องห้ามหรือไม่
+        return id.Contains("sea weed") || name.Contains("sea weed") ||
+               id.Contains("seaweed") || name.Contains("seaweed") ||
+               id.Contains("shell") || name.Contains("shell") ||
+               id.Contains("shrimp") || name.Contains("shrimp") ||
+               id.Contains("squid") || name.Contains("squid");
+    }
 
         private static T PickRandom<T>(T[] array) where T : class
         {

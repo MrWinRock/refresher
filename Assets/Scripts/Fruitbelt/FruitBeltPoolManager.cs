@@ -21,10 +21,11 @@ public class FruitBeltPoolManager : MonoBehaviour
     private readonly Dictionary<string, Queue<FruitBeltObject>> _pool = new();
 
     public FruitData[] AllFruits => fruitDataList;
+
     public Transform   PoolParent => poolParent;
 
     public void InitializePool()
-{
+    {
         foreach (var queue in _pool.Values)
             foreach (var obj in queue)
                 if (obj != null) Destroy(obj.gameObject);

@@ -40,10 +40,12 @@ public class FruitBeltIngredientSlot : MonoBehaviour
 
         transform.DOKill();
         transform.localPosition = _originLocalPosition;
-        transform.localScale    = _originLocalScale;
+        
+        // Use absolute scale from FruitData to be consistent with belt objects
+        transform.localScale = data.recipeScale;
 
         if (fruitRenderer != null)
-        {
+{
             fruitRenderer.sprite = data.sprite;
             fruitRenderer.color  = Silhouette;
         }
@@ -66,7 +68,14 @@ public class FruitBeltIngredientSlot : MonoBehaviour
     /// <summary>เรียกเมื่อ player เลือก ingredient ผิด</summary>
     public void Miss()
     {
+        if (IsCollected) return;
+        IsCollected = true;
+
         transform.DOKill();
+
+        if (fruitRenderer != null)
+            fruitRenderer.DOColor(new Color(0.8f, 0.2f, 0.2f, 1f), 0.2f).SetEase(Ease.OutQuad);
+
         transform.DOShakePosition(
             missShakeDuration,
             new Vector3(missShakeStrength, 0f, 0f),
