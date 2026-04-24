@@ -9,11 +9,21 @@ namespace Interfaces.MainMenu
 {
     public class SceneTransitionService : MonoBehaviour
     {
+        private enum TransitionLookMode
+        {
+            SolidOrSprite = 0,
+            Gradient = 1
+        }
+
         private static SceneTransitionService _instance;
 
         [Header("Transition Look")]
+        [SerializeField] private TransitionLookMode lookMode = TransitionLookMode.SolidOrSprite;
         [SerializeField] private Color transitionColor = Color.black;
         [SerializeField] private Sprite transitionSprite;
+        [SerializeField] private Gradient transitionGradient = new Gradient();
+        [SerializeField, Min(4)] private int gradientResolution = 256;
+        [SerializeField] private bool gradientHorizontal = true;
 
         [Header("Transition Timing")]
         [SerializeField, Min(0.05f)] private float coverDuration = 0.45f;
@@ -24,6 +34,8 @@ namespace Interfaces.MainMenu
         private RectTransform _transitionRect;
         private Image _transitionImage;
         private bool _isTransitioning;
+        private Texture2D _generatedGradientTexture;
+        private Sprite _generatedGradientSprite;
 
         public static void TransitionToScene(string sceneName)
         {
@@ -77,6 +89,11 @@ namespace Interfaces.MainMenu
             DontDestroyOnLoad(gameObject);
 
             BuildOverlayIfNeeded();
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseGeneratedGradientResources();
         }
 
         private void StartTransition(string sceneName, PlayableDirector timelineBeforeTransition)
@@ -212,10 +229,78 @@ namespace Interfaces.MainMenu
 
         private void ApplyVisualStyle()
         {
+            if (lookMode == TransitionLookMode.Gradient)
+            {
+                ApplyGradientStyle();
+                return;
+            }
+
             _transitionImage.color = transitionColor;
             _transitionImage.sprite = transitionSprite;
             _transitionImage.type = Image.Type.Simple;
             _transitionImage.preserveAspect = false;
+        }
+
+        private void ApplyGradientStyle()
+        {
+            int safeResolution = Mathf.Max(4, gradientResolution);
+            int width = gradientHorizontal ? safeResolution : 1;
+            int height = gradientHorizontal ? 1 : safeResolution;
+
+            if (_generatedGradientTexture != null)
+            {
+                Destroy(_generatedGradientTexture);
+                _generatedGradientTexture = null;
+            }
+
+            if (_generatedGradientSprite != null)
+            {
+                Destroy(_generatedGradientSprite);
+                _generatedGradientSprite = null;
+            }
+
+            _generatedGradientTexture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+
+            Color[] colors = new Color[width * height];
+            for (int i = 0; i < safeResolution; i++)
+            {
+                float t = safeResolution > 1 ? (float)i / (safeResolution - 1) : 0f;
+                Color sampled = transitionGradient.Evaluate(t);
+                colors[i] = sampled;
+            }
+
+            _generatedGradientTexture.SetPixels(colors);
+            _generatedGradientTexture.Apply(false, false);
+
+            _generatedGradientSprite = Sprite.Create(
+                _generatedGradientTexture,
+                new Rect(0f, 0f, width, height),
+                new Vector2(0.5f, 0.5f),
+                100f);
+
+            _transitionImage.color = Color.white;
+            _transitionImage.sprite = _generatedGradientSprite;
+            _transitionImage.type = Image.Type.Simple;
+            _transitionImage.preserveAspect = false;
+        }
+
+        private void ReleaseGeneratedGradientResources()
+        {
+            if (_generatedGradientSprite != null)
+            {
+                Destroy(_generatedGradientSprite);
+                _generatedGradientSprite = null;
+            }
+
+            if (_generatedGradientTexture != null)
+            {
+                Destroy(_generatedGradientTexture);
+                _generatedGradientTexture = null;
+            }
         }
     }
 }
