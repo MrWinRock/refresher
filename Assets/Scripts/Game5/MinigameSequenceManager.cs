@@ -23,12 +23,14 @@ namespace Game5
         [SerializeField] private float animDuration = 0.5f;
         [SerializeField] private Vector3 orderHiddenOffset = new Vector3(0, -10f, 0); 
         [SerializeField] private Vector3 beltHiddenOffset = new Vector3(15f, 0, 0);   
+        [SerializeField] private Vector3 shakerHiddenOffset = new Vector3(0, -5f, 0);
         [SerializeField] private Ease animEaseIn = Ease.OutBack;
         [SerializeField] private Ease animEaseOut = Ease.InBack;
 
         [Header("Settings")]
-[SerializeField] private Key startKey = Key.Space;
+        [SerializeField] private Key startKey = Key.Space;
         [SerializeField] private float fruitBeltBoostMultiplier = 5.0f;
+        [SerializeField] private float delayBetweenMinigames = 1.0f;
 
         [Header("FreshTime")]
 
@@ -41,6 +43,7 @@ namespace Game5
 
         private Vector3 _orderHomePos;
         private Vector3 _beltHomePos;
+        private Vector3 _shakerHomePos;
 
         public void SetFreshTimeActive(bool active)
         {
@@ -62,7 +65,8 @@ namespace Game5
 
             if (orderRoot != null) _orderHomePos = orderRoot.transform.localPosition;
             if (ingredientsBeltRoot != null) _beltHomePos = ingredientsBeltRoot.transform.localPosition;
-        }
+            if (shakerVisualRoot != null) _shakerHomePos = shakerVisualRoot.transform.localPosition;
+            }
 
         private void OnEnable()
         {
@@ -195,7 +199,7 @@ namespace Game5
             {
                 _isShaking = false;
                 shakerController?.EndMinigame();
-                if (shakerVisualRoot != null) shakerVisualRoot.SetActive(false);
+                AnimateShakerOut();
                 if (shakerUIRoot != null) shakerUIRoot.SetActive(false);
             }
 
@@ -269,19 +273,54 @@ namespace Game5
                         ingredientsBeltRoot.transform.localPosition = _beltHomePos;
                     });
             }
-        }
+            }
+
+            private void AnimateShakerIn()
+            {
+            if (shakerVisualRoot != null)
+            {
+                shakerVisualRoot.SetActive(true);
+                shakerVisualRoot.transform.DOKill();
+                shakerVisualRoot.transform.localPosition = _shakerHomePos + shakerHiddenOffset;
+                shakerVisualRoot.transform.DOLocalMove(_shakerHomePos, animDuration).SetEase(animEaseIn);
+            }
+            }
+
+            private void AnimateShakerOut()
+            {
+            if (shakerVisualRoot != null)
+            {
+                shakerVisualRoot.transform.DOKill();
+                shakerVisualRoot.transform.DOLocalMove(_shakerHomePos + shakerHiddenOffset, animDuration)
+                    .SetEase(animEaseOut)
+                    .OnComplete(() => {
+                        shakerVisualRoot.SetActive(false);
+                        shakerVisualRoot.transform.localPosition = _shakerHomePos;
+                    });
+            }
+            }
 
         private void OnFruitBeltFinished(float score)
         {
-            AnimateUIOut();
+            StartCoroutine(DelayedShakerStart(score));
+        }
 
-            // If customer left during belt, don't start shaker
-            if (_activeCustomer == null) return;
+        private System.Collections.IEnumerator DelayedShakerStart(float score)
+        {
+            AnimateUIOut();
 
             if (BoostMode.Instance != null)
             {
                 BoostMode.Instance.AddBoostPoints(score * fruitBeltBoostMultiplier);
             }
+
+            if (delayBetweenMinigames > 0)
+            {
+                yield return new WaitForSeconds(delayBetweenMinigames);
+            }
+
+            // If customer left during delay, don't start shaker
+            if (_activeCustomer == null) yield break;
 
             StartShaker();
         }
@@ -292,7 +331,8 @@ namespace Game5
             
             ResolveTextBubbleRootIfNeeded();
             if (textBubbleRoot != null) textBubbleRoot.SetActive(false);
-            if (shakerVisualRoot != null) shakerVisualRoot.SetActive(true);
+            
+            AnimateShakerIn();
             if (shakerUIRoot != null) shakerUIRoot.SetActive(true);
 
             shakerController?.BeginMinigame();
@@ -316,13 +356,23 @@ namespace Game5
 
         private void OnShakerFinished()
         {
+            StartCoroutine(DelayedPouringStart());
+        }
+
+        private System.Collections.IEnumerator DelayedPouringStart()
+        {
             _isShaking = false;
 
-            if (shakerVisualRoot != null) shakerVisualRoot.SetActive(false);
+            AnimateShakerOut();
             if (shakerUIRoot != null) shakerUIRoot.SetActive(false);
-            
-            // If customer left during shaker, don't start pouring
-            if (_activeCustomer == null) return;
+
+            if (delayBetweenMinigames > 0)
+            {
+                yield return new WaitForSeconds(delayBetweenMinigames);
+            }
+
+            // If customer left during delay, don't start pouring
+            if (_activeCustomer == null) yield break;
 
             // Now start the pouring minigame
             if (pouringTransitionController != null)

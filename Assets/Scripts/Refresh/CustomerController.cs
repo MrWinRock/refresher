@@ -52,6 +52,11 @@ namespace Refresh
         [SerializeField] private float feverReactionDisplayDuration = 2.0f;
         [SerializeField] private float feverReactionScale = 1.5f;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip orderSfx;        // CusChat
+        [SerializeField] private AudioClip satisfiedSfx;    // HappyCus
+
         private Coroutine _stateRoutine;
         private DrinkData _currentOrder;
         private Tween _moveTween;
@@ -235,12 +240,13 @@ namespace Refresh
             State = CustomerState.Waiting;
             UpdateVisualState();
             orderBubble?.ShowOrder(_currentOrder);
+            PlaySFX(orderSfx);
             textBubble?.ShowText(startMinigamePromptText);
             ShowAndActivateHeatBar();
-        }
+            }
 
-        private IEnumerator SatisfiedRoutine()
-        {
+            private IEnumerator SatisfiedRoutine()
+            {
             State = CustomerState.Satisfied;
             heatBar?.StopDrain();
             HideHeatBar();
@@ -248,6 +254,7 @@ namespace Refresh
             StopWalkBob();
             
             UpdateVisualState(); // Switch to happy sprite
+            PlaySFX(satisfiedSfx);
 
             if (_isFever && _characterData != null && _characterData.feverReactionActionSprite != null)
             {
@@ -456,6 +463,14 @@ namespace Refresh
             visualRoot.localPosition = Vector3.zero;
             visualRoot.localRotation = Quaternion.identity;
             visualRoot.localScale = Vector3.one;
+        }
+
+        private void PlaySFX(AudioClip clip)
+        {
+            if (clip != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
         }
 
         private void KillAllTweens()

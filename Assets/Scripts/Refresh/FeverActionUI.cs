@@ -14,6 +14,10 @@ namespace Refresh
         [SerializeField] private float fadeInDuration = 0.3f;
         [SerializeField] private float fadeOutDuration = 0.5f;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip reactionSfx; // FeverSplash
+
         private void Awake()
         {
             if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
@@ -54,6 +58,8 @@ namespace Refresh
             GameObject instance = reactionTransform.gameObject;
             instance.SetActive(true);
 
+            PlaySFX();
+
             if (optionalSprite != null)
             {
                 var img = instance.GetComponent<UnityEngine.UI.Image>();
@@ -92,6 +98,8 @@ namespace Refresh
             // Instantiate
             GameObject instance = Instantiate(prefab, container);
             instance.SetActive(true);
+
+            PlaySFX();
             
             // Fade in master
             canvasGroup.DOFade(1f, fadeInDuration);
@@ -105,9 +113,17 @@ namespace Refresh
             yield return new WaitForSeconds(fadeOutDuration);
             
             Destroy(instance);
-        }
+            }
 
-        // Legacy support for sprite-only
+            private void PlaySFX()
+            {
+            if (reactionSfx != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(reactionSfx);
+            }
+            }
+
+            // Legacy support for sprite-only
         public IEnumerator ShowReaction(Sprite reactionSprite, float duration)
         {
             // We'll create a simple dummy prefab or just handle it if needed

@@ -41,6 +41,16 @@ public class FruitBeltMinigameManager : MonoBehaviour
     [Header("Auto Start")]
     [SerializeField] private bool autoStartOnEnable = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource beltAudioSource;
+    [SerializeField] private AudioSource sfxAudioSource;
+    [SerializeField] private AudioClip   slotRunClip;
+    [SerializeField, Range(0, 1)] private float beltVolume = 0.3f;
+    [SerializeField] private AudioClip   clackSlotClip;
+    [SerializeField] private AudioClip   correctClip;   // TINGG
+    [SerializeField] private AudioClip   missClip;      // ADDADD
+    [SerializeField] private AudioClip   perfectClip;
+
     // จำนวนส่วนผสมที่เก็บถูกต้อง (Raw Score) ตามที่ User ต้องการ
     public event Action<float> OnMinigameComplete;
     public bool IsPlaying => _isPlaying;
@@ -111,6 +121,10 @@ public class FruitBeltMinigameManager : MonoBehaviour
         StopAllCoroutines();
         _acceptingInput = false;
         beltController?.StopBelt();
+
+        if (beltAudioSource != null)
+            beltAudioSource.Stop();
+
         _isPlaying = false;
     }
 
@@ -179,6 +193,15 @@ public class FruitBeltMinigameManager : MonoBehaviour
         poolManager.InitializePool();
         beltController.StartBelt(targetIds);
 
+        // Start Belt Sound
+        if (beltAudioSource != null && slotRunClip != null)
+        {
+            beltAudioSource.clip = slotRunClip;
+            beltAudioSource.loop = true;
+            beltAudioSource.volume = beltVolume;
+            beltAudioSource.Play();
+        }
+
         // กำหนด frame ที่จะเริ่มรับ input (+2 เพื่อให้พ้น frame ที่กด Space เริ่มเกม)
         // วิธีนี้ทำงานใน Update() ล้วนๆ ไม่ขึ้นกับ Coroutine resume timing
         _inputReadyFrame = Time.frameCount + 2;
@@ -189,17 +212,32 @@ public class FruitBeltMinigameManager : MonoBehaviour
 
         // 6. จบ
         _acceptingInput = false;
+
+        // Check for Perfect
+        if (_correctHits >= _recipe.Length && _recipe.Length > 0)
+        {
+            PlaySFX(perfectClip);
+        }
+
         yield return new WaitForSeconds(0.5f);
         beltController.StopBelt();
+
+        if (beltAudioSource != null)
+            beltAudioSource.Stop();
+
         _isPlaying = false;
 
         // ส่งคะแนนเป็นจำนวนที่ถูก (Raw Score) เพื่อให้สอดคล้องกับ "สุ่มคะแนนรวมตามจำนวนส่วนผสม"
         OnMinigameComplete?.Invoke((float)_correctHits);
-        }
+    }
 
     private void HandleConfirmInput()
     {
         var fruit = activeZone.GetClosestFruit();
+
+        // Always play click sound when attempting to select
+        PlaySFX(clackSlotClip);
+
         if (fruit == null)
         {
             Debug.Log("[FruitBelt] No fruit found in ActiveZone.");
@@ -222,11 +260,13 @@ public class FruitBeltMinigameManager : MonoBehaviour
             Debug.Log("[FruitBelt] MATCH! (or FreshTime) Collecting...");
             _correctHits++;
             ingredientSlots[_currentIndex].Collect();
+            PlaySFX(correctClip);
         }
         else
         {
             Debug.Log("[FruitBelt] MISMATCH!");
             ingredientSlots[_currentIndex].Miss();
+            PlaySFX(missClip);
         }
 
         // เคลียร์ fruit ออกจากสายพาน
@@ -234,6 +274,14 @@ public class FruitBeltMinigameManager : MonoBehaviour
 
         // เลื่อนไปยังส่วนผสมถัดไปเสมอ ไม่ว่าจะถูกหรือผิด
         _currentIndex++;
+    }
+
+    private void PlaySFX(AudioClip clip)
+    {
+        if (clip != null && sfxAudioSource != null)
+        {
+            sfxAudioSource.PlayOneShot(clip);
+        }
     }
 
     private FruitData[] GenerateRecipe()

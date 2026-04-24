@@ -5,6 +5,9 @@ using Game5;
 
 public class FreshTimeManager : MonoBehaviour
 {
+    public static event System.Action FreshTimeStarted;
+    public static event System.Action FreshTimeEnded;
+
     [Header("References")]
     [SerializeField] private MinigameManager minigameManager;
     [SerializeField] private CustomerSpawner customerSpawner;
@@ -43,6 +46,8 @@ public class FreshTimeManager : MonoBehaviour
         _isFreshTimeActive = true;
         _freshTimeEndPending = false;
 
+        FreshTimeStarted?.Invoke();
+
         customerSpawner?.SetNextAsFever(true);
         minigameManager?.SetFeverMode(true);
         sequenceManager?.SetFreshTimeActive(true);
@@ -67,6 +72,8 @@ public class FreshTimeManager : MonoBehaviour
     {
         _isFreshTimeActive = false;
         _freshTimeEndPending = false;
+
+        FreshTimeEnded?.Invoke();
 
         customerSpawner?.SetNextAsFever(false);
         minigameManager?.SetFeverMode(false);

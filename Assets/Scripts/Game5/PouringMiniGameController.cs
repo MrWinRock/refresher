@@ -51,8 +51,13 @@ namespace Game5
         [Header("FreshTime")]
         [SerializeField] private float feverFillSpeedMultiplier = 1.5f;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource sfxAudioSource;
+        [SerializeField] private AudioClip potHeatSfx;
+        [SerializeField] private float potHeatTriggerPercent = 80f;
+
         private Quaternion _initialShakerRotation;
-private bool _hasStartedPouring;
+        private bool _hasStartedPouring;
         private bool _overflowed;
         private bool _isFinished;
         private float _pourStartTime;
@@ -62,6 +67,7 @@ private bool _hasStartedPouring;
         private float _currentY;
         private bool _isPourInputArmed;
         private bool _feverMode;
+        private bool _hasPlayedPotHeat;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -234,6 +240,15 @@ private bool _hasStartedPouring;
             }
 
             RefreshDebugPourMetrics();
+
+            if (!_hasPlayedPotHeat && pouredPercent >= potHeatTriggerPercent && _isMinigameActive)
+            {
+                _hasPlayedPotHeat = true;
+                if (potHeatSfx != null && sfxAudioSource != null)
+                {
+                    sfxAudioSource.PlayOneShot(potHeatSfx);
+                }
+            }
         }
 
         private void StartStream()
@@ -292,6 +307,7 @@ private bool _hasStartedPouring;
             _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
+            _hasPlayedPotHeat = false;
             _pourStartTime = 0f;
             elapsedPourTime = 0f;
             finalPourTime = 0f;
@@ -314,6 +330,7 @@ private bool _hasStartedPouring;
             _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
+            _hasPlayedPotHeat = false;
             _pourStartTime = 0f;
             elapsedPourTime = 0f;
             finalPourTime = 0f;
