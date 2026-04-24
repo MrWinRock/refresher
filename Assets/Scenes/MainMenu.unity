@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 129605827}
   - component: {fileID: 129605829}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1988,7 +1988,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: b670d02fb0a8ec04a9451c56b54bfb6b, type: 3}
+  m_Resource: {fileID: 8300000, guid: cfe6790b09dae0041ac04b8b1f14a713, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
