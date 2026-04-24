@@ -53,7 +53,11 @@ namespace Game5
 
         [Header("Audio")]
         [SerializeField] private AudioSource sfxAudioSource;
+        [SerializeField] private AudioSource pourAudioSource; // New source for looping pour sound
+        [SerializeField] private AudioClip pourSfx;          // (5)POURเทน้ำ
         [SerializeField] private AudioClip potHeatSfx;
+        [SerializeField] private AudioClip perfectResultSfx;  // (3-5) Perfect
+        [SerializeField] private AudioClip otherResultSfx;    // TINGG SLOT
         [SerializeField] private float potHeatTriggerPercent = 80f;
 
         private Quaternion _initialShakerRotation;
@@ -265,6 +269,14 @@ namespace Game5
             {
                 streamParticles.Play();
             }
+
+            // Start looping pour sound
+            if (pourAudioSource != null && pourSfx != null && !pourAudioSource.isPlaying)
+            {
+                pourAudioSource.clip = pourSfx;
+                pourAudioSource.loop = true;
+                pourAudioSource.Play();
+            }
         }
 
         private void StopStream()
@@ -280,6 +292,12 @@ namespace Game5
             if (clearParticlesOnStop)
             {
                 streamParticles.Clear(true);
+            }
+
+            // Stop looping pour sound
+            if (pourAudioSource != null && pourAudioSource.isPlaying)
+            {
+                pourAudioSource.Stop();
             }
         }
 
@@ -449,8 +467,22 @@ namespace Game5
             }
 
             lastResult = result;
+
+            // Play Result SFX
+            if (sfxAudioSource != null)
+            {
+                if (lastResult.Contains("Perfect"))
+                {
+                    if (perfectResultSfx != null) sfxAudioSource.PlayOneShot(perfectResultSfx);
+                }
+                else
+                {
+                    if (otherResultSfx != null) sfxAudioSource.PlayOneShot(otherResultSfx);
+                }
+            }
+
             Debug.Log($"Pour Result: {lastResult} | points={pointsEarned:F1}, total={totalPoints:F1}, normalized={normalizedPoints:F2}, boostAdd={boostPointsToAdd:F2} | pourTime={finalPourTime:F3}s target={targetTimeDebug:F3}s delta={deltaTimeDebug:+0.000;-0.000;0.000}s | fill={pouredPercent:F1}%", this);
-        }
+            }
 
         private void RefreshDebugPourMetrics()
         {

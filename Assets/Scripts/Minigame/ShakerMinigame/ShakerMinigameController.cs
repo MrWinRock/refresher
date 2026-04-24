@@ -27,6 +27,7 @@ namespace Minigame.ShakerMinigame
         private bool _feverMode;
         private bool _isRunning;
         private int _resolvedNotes;
+        private int _perfectCount;
 
         public event System.Action MinigameFinished;
 
@@ -87,6 +88,7 @@ namespace Minigame.ShakerMinigame
             }
 
             _resolvedNotes = 0;
+            _perfectCount = 0;
             _isRunning = true;
 
             _targetNoteCount = Random.Range(minNoteCount, maxNoteCount + 1);
@@ -110,13 +112,20 @@ namespace Minigame.ShakerMinigame
 
             _isRunning = false;
             noteSpawner?.Stop();
+
+            // Check for Perfect
+            if (_perfectCount >= _targetNoteCount && _targetNoteCount > 0)
+            {
+                uiFeedback?.PlayAllPerfectSfx();
+            }
+
             minigameManager?.CompleteMinigame(minigameId, Mathf.RoundToInt(_rhythm.TotalPoints));
 
             if (_boostMode == null) _boostMode = FindFirstObjectByType<BoostMode>();
             _boostMode?.AddBoostPoints(_rhythm.CalculateBoostPoint());
 
             MinigameFinished?.Invoke();
-            }
+        }
 
         // ReSharper disable Unity.PerformanceAnalysis
         private void OnArrowPressed(ArrowDirection direction, float hitTime)
@@ -125,6 +134,8 @@ namespace Minigame.ShakerMinigame
             {
                 return;
             }
+
+            uiFeedback?.PlayShakerShake();
 
             if (noteSpawner.TryGetNoteByDirection(direction, out var note))
             {
@@ -139,6 +150,8 @@ namespace Minigame.ShakerMinigame
             {
                 return;
             }
+
+            uiFeedback?.PlayShakerShake();
 
             if (noteSpawner.TryGetEarliestNote(out var note))
             {
@@ -179,6 +192,8 @@ namespace Minigame.ShakerMinigame
 
         private void ApplyResult(ShakerNoteController note, ShakerJudgementResult result, float hitTime, ArrowDirection pressedDirection)
         {
+            if (result.Tier == JudgementTier.Perfect) _perfectCount++;
+
             _rhythm.AddPoints(result.AwardedPoints);
             uiFeedback?.SetScore(_rhythm.TotalPoints);
             uiFeedback?.ShowJudgement(result.Tier, note.transform.position);

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 #if DOTWEEN_ENABLED
@@ -24,6 +24,11 @@ namespace Minigame.ShakerMinigame
         [SerializeField] private AudioClip greatSfx;
         [SerializeField] private AudioClip goodSfx;
         [SerializeField] private AudioClip badSfx;
+        
+        [Header("Custom SFX")]
+        [SerializeField] private AudioClip buttonPressSfx; // TINGG SLOT
+        [SerializeField] private AudioClip[] shakerSfx;     // Clack1-3
+        [SerializeField] private AudioClip allPerfectSfx;   // (3-5) Perfect
 
         [Header("VFX")]
         [SerializeField] private ParticleSystem perfectVfx;
@@ -104,6 +109,14 @@ namespace Minigame.ShakerMinigame
                 return;
             }
 
+            // User wants TINGG SLOT for button hits (Correct choices)
+            if (tier != JudgementTier.Bad && buttonPressSfx != null)
+            {
+                audioSource.PlayOneShot(buttonPressSfx);
+                return;
+            }
+
+            // Fallback to existing logic if no buttonPressSfx
             var clip = tier switch
             {
                 JudgementTier.Perfect => perfectSfx,
@@ -115,6 +128,28 @@ namespace Minigame.ShakerMinigame
             if (clip != null)
             {
                 audioSource.PlayOneShot(clip);
+            }
+        }
+
+        public void PlayShakerShake()
+        {
+            if (audioSource == null || shakerSfx == null || shakerSfx.Length == 0)
+            {
+                return;
+            }
+
+            var clip = shakerSfx[Random.Range(0, shakerSfx.Length)];
+            if (clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+        }
+
+        public void PlayAllPerfectSfx()
+        {
+            if (audioSource != null && allPerfectSfx != null)
+            {
+                audioSource.PlayOneShot(allPerfectSfx);
             }
         }
 
