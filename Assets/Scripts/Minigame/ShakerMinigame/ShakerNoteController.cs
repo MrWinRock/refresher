@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -219,7 +219,14 @@ namespace Minigame.ShakerMinigame
 
             _timeoutSequence.OnComplete(() => onComplete?.Invoke());
 #else
-            StartCoroutine(FallbackTimeoutAnimation(rectTransform, onComplete));
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(FallbackTimeoutAnimation(rectTransform, onComplete));
+            }
+            else
+            {
+                onComplete?.Invoke();
+            }
 #endif
         }
 

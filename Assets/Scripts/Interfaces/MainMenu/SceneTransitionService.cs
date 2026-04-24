@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -62,6 +62,7 @@ namespace Interfaces.MainMenu
             }
 
             _instance = this;
+            transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
 
             BuildOverlayIfNeeded();

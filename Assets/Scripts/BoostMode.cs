@@ -58,8 +58,9 @@ private static void ResetStatics()
         }
 
         Instance = this;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
-    }
+        }
 
     private void OnDestroy()
     {

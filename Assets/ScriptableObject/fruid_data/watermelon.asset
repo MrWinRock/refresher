@@ -15,7 +15,7 @@ MonoBehaviour:
   fruitId: watermelon
   fruitName: WaterMelon
   fruitType: 0
-  sprite: {fileID: 3176924437801271612, guid: 19598d70529b3964c8244a851a9a35cc, type: 3}
+  sprite: {fileID: 8532703672136922592, guid: 00392205d2ad7114596f8e484bc4cf9a, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   recipeScale: {x: 0.15, y: 0.15, z: 0.15}
   beltScale: {x: 1.2, y: 1.2, z: 1.2}

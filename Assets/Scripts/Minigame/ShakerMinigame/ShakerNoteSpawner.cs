@@ -100,6 +100,13 @@ private readonly HashSet<ArrowDirection> _activeDirections = new();
         private void OnNoteExpiredInternally(ShakerNoteController note, float _)
         {
             NoteExpired?.Invoke(note);
+            
+            // If the game ended or note was removed during the event, don't play animation
+            if (note == null || note.gameObject == null || !note.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
             note.PlayTimeoutAnimation(() => RemoveNote(note));
         }
 

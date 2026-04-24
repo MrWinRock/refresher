@@ -80,10 +80,15 @@ namespace Game5
             {
                 pouringTransitionController.MinigameExitCompleted += OnPouringExitCompleted;
             }
-        }
 
-        private void OnDisable()
-        {
+            if (servingController != null)
+            {
+                servingController.OnServingFinished += OnServingFinished;
+            }
+            }
+
+            private void OnDisable()
+            {
             if (shakerController != null)
             {
                 shakerController.MinigameFinished -= OnShakerFinished;
@@ -97,6 +102,11 @@ namespace Game5
             if (pouringTransitionController != null)
             {
                 pouringTransitionController.MinigameExitCompleted -= OnPouringExitCompleted;
+            }
+
+            if (servingController != null)
+            {
+                servingController.OnServingFinished -= OnServingFinished;
             }
 
             if (_activeCustomer != null)
@@ -194,9 +204,14 @@ namespace Game5
                 pouringTransitionController.EndMinigame();
             }
 
+            if (servingController != null && servingController.IsWaitingForServe)
+            {
+                servingController.CancelServing();
+            }
+
             ResolveTextBubbleRootIfNeeded();
             if (textBubbleRoot != null) textBubbleRoot.SetActive(true);
-        }
+            }
 
         private void StartFruitBelt(DrinkData drinkData)
         {
@@ -319,7 +334,13 @@ namespace Game5
 
         private void OnPouringExitCompleted()
         {
-            // The whole sequence for this customer is finished normally
+            // We no longer clear the active customer here, 
+            // as they might still be waiting for the drink to be served.
+            // Cleanup now happens in OnServingFinished or HandleActiveCustomerLeft.
+        }
+
+        private void OnServingFinished()
+        {
             if (_activeCustomer != null)
             {
                 _activeCustomer.OnCustomerLeft -= HandleActiveCustomerLeft;

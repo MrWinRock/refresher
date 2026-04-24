@@ -41,6 +41,8 @@ namespace Game5
         private Coroutine _startInputUnlockCoroutine;
         private Coroutine _autoServeCoroutine;
         private bool _freshTimeActive;
+        
+        public event System.Action OnServingFinished;
 
         public bool IsWaitingForServe => _isWaitingForServe;
 
@@ -196,7 +198,17 @@ namespace Game5
             PlayServeForwardAnimated();
             _preparedDrinkCustomer = null;
             _preparedDrinkData = null;
-        }
+            
+            OnServingFinished?.Invoke();
+            }
+
+            public void CancelServing()
+            {
+                _isWaitingForServe = false;
+                _preparedDrinkCustomer = null;
+                _preparedDrinkData = null;
+                HidePreparedDrinkAnimated();
+            }
 
         private void StartUnlockStartInputNextFrame()
         {
