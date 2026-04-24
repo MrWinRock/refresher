@@ -8,14 +8,14 @@ namespace Minigame.ShakerMinigame
     {
         [Header("Spawn")] [SerializeField] private ShakerNoteController notePrefab;
         [SerializeField] private RectTransform spawnArea;
-        [SerializeField] private float spawnInterval = 0.6f;
+        [SerializeField] private float spawnInterval = 0.45f;
         [SerializeField] private int maxActiveNotes = 4;
-        [SerializeField] private float noteLeadTime = 1.0f;
+        [SerializeField] private float noteLeadTime = 0.7f;
 
         [Header("FreshTime Settings")]
-        [SerializeField] private float freshTimeSpawnInterval = 0.3f;
-        [SerializeField] private float freshTimeNoteLeadTime = 0.6f;
-        [SerializeField] private float freshTimeBadWindow = 1.0f;
+        [SerializeField] private float freshTimeSpawnInterval = 0.25f;
+        [SerializeField] private float freshTimeNoteLeadTime = 0.45f;
+        [SerializeField] private float freshTimeBadWindow = 0.8f;
 
         private readonly List<ShakerNoteController> _activeNotes = new();
 private readonly HashSet<ArrowDirection> _activeDirections = new();

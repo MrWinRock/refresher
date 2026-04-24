@@ -1381,9 +1381,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Minigame.ShakerMinigame.ShakerNoteSpawner
   notePrefab: {fileID: 2967062283826153249, guid: 2234c1538a57ac84a88e282e684e4548, type: 3}
   spawnArea: {fileID: 1738531399}
-  spawnInterval: 1
+  spawnInterval: 0.6
   maxActiveNotes: 4
-  noteLeadTime: 1
+  noteLeadTime: 0.7
   freshTimeSpawnInterval: 0.3
   freshTimeNoteLeadTime: 0.6
   freshTimeBadWindow: 1
@@ -10182,6 +10182,7 @@ MonoBehaviour:
   maxTotalPoints: 1
   autoBeginOnEnable: 0
   feverFillSpeedMultiplier: 1.5
+  playerShakerVisual: {fileID: 6038553049611705618}
   pointsEarned: 0
   totalPoints: 0
   normalizedPoints: 0
