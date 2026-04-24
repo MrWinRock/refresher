@@ -54,6 +54,21 @@ namespace Game5
             {
                 fruitBeltManager.SetFreshTimeMode(active);
             }
+
+            // If FreshTime just activated while FruitBelt is mid-game,
+            // stop it immediately and jump directly to Shaker so we don't
+            // get stuck in an infinite ingredient loop.
+            if (active && fruitBeltManager != null && fruitBeltManager.IsPlaying)
+            {
+                fruitBeltManager.StopMinigame();
+                AnimateUIOut();
+                // Cancel any pending DelayedShakerStart that was already running
+                StopAllCoroutines();
+                if (_activeCustomer != null)
+                {
+                    StartShaker();
+                }
+            }
         }
 
         private void Awake()
@@ -165,7 +180,9 @@ namespace Game5
             // Subscribe to customer leaving (impatience)
             _activeCustomer.OnCustomerLeft += HandleActiveCustomerLeft;
 
-            if (fruitBeltManager != null)
+            // In FreshTime mode skip the ingredient belt and go directly to shaking —
+            // the belt auto-loop causes an infinite restart when _freshTimeActive is true.
+            if (fruitBeltManager != null && !_freshTimeActive)
             {
                 StartFruitBelt(drinkData);
             }
@@ -327,11 +344,16 @@ namespace Game5
 
         private void StartShaker()
         {
+            // Guard: a coroutine (DelayedShakerStart) and the FreshTime auto-timer can
+            // both try to call StartShaker in the same frame or within the same delay
+            // window — the second call must be silently ignored.
+            if (_isShaking) return;
+
             _isShaking = true;
-            
+
             ResolveTextBubbleRootIfNeeded();
             if (textBubbleRoot != null) textBubbleRoot.SetActive(false);
-            
+
             AnimateShakerIn();
             if (shakerUIRoot != null) shakerUIRoot.SetActive(true);
 

@@ -55,10 +55,8 @@ namespace Game5
         [SerializeField] private AudioSource sfxAudioSource;
         [SerializeField] private AudioSource pourAudioSource; // New source for looping pour sound
         [SerializeField] private AudioClip pourSfx;          // (5)POURเทน้ำ
-        [SerializeField] private AudioClip potHeatSfx;
         [SerializeField] private AudioClip perfectResultSfx;  // (3-5) Perfect
         [SerializeField] private AudioClip otherResultSfx;    // TINGG SLOT
-        [SerializeField] private float potHeatTriggerPercent = 80f;
 
         private Quaternion _initialShakerRotation;
         private bool _hasStartedPouring;
@@ -71,7 +69,6 @@ namespace Game5
         private float _currentY;
         private bool _isPourInputArmed;
         private bool _feverMode;
-        private bool _hasPlayedPotHeat;
 
         [Header("Debug (Runtime)")]
         [SerializeField, ReadOnly] private float pointsEarned;
@@ -244,15 +241,6 @@ namespace Game5
             }
 
             RefreshDebugPourMetrics();
-
-            if (!_hasPlayedPotHeat && pouredPercent >= potHeatTriggerPercent && _isMinigameActive)
-            {
-                _hasPlayedPotHeat = true;
-                if (potHeatSfx != null && sfxAudioSource != null)
-                {
-                    sfxAudioSource.PlayOneShot(potHeatSfx);
-                }
-            }
         }
 
         private void StartStream()
@@ -325,7 +313,6 @@ namespace Game5
             _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
-            _hasPlayedPotHeat = false;
             _pourStartTime = 0f;
             elapsedPourTime = 0f;
             finalPourTime = 0f;
@@ -348,7 +335,6 @@ namespace Game5
             _isPourInputArmed = false;
             _overflowed = false;
             _isFinished = false;
-            _hasPlayedPotHeat = false;
             _pourStartTime = 0f;
             elapsedPourTime = 0f;
             finalPourTime = 0f;
